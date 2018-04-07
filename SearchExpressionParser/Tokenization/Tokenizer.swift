@@ -5,7 +5,9 @@ public struct Tokenizer {
 
     internal static var defaultExtractors: [TokenExtractor] {
         return [
-            WordExtractor()
+            OpeningParensExtractor(),
+            ClosingParensExtractor(),
+            WordExtractor() // Wildcard extractor comes last
         ]
     }
 
@@ -68,5 +70,31 @@ extension TokenCharacterBuffer {
 }
 
 internal struct TokenizerError: Error {
+    enum Kind {
+        case cannotExtractOpeningParens
+    }
 
+    let kind: Kind
+    let range: Range<Int>
+}
+
+extension TokenizerError {
+    init(kind: Kind, index: Int) {
+        self.init(
+            kind: kind,
+            range: index ..< index + 1)
+    }
+}
+
+extension TokenizerError.Kind: Equatable { }
+
+func ==(lhs: TokenizerError.Kind, rhs: TokenizerError.Kind) -> Bool {
+
+    switch (lhs, rhs) {
+    case (.cannotExtractOpeningParens, .cannotExtractOpeningParens):
+        return true
+
+    default:
+        return false
+    }
 }

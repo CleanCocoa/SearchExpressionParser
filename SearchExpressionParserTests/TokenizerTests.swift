@@ -34,40 +34,106 @@ class TokenizerTests: XCTestCase {
         XCTAssert(tokens.isEmpty)
     }
 
-    func testTokens_1Character_ReturnsWord() {
+
+    // MARK: Simple words
+
+    func testTokens_1Character() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "x").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Word(string: "x")])
+        XCTAssertEqual(tokens, [Word("x")])
     }
 
-    func testTokens_1CharacterWithWhitespace_ReturnsWordWithCharacter() {
+    func testTokens_1CharacterWithWhitespace() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "     x    ").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Word(string: "x")])
+        XCTAssertEqual(tokens, [Word("x")])
     }
 
-    func testTokens_3Characters_ReturnsWord() {
+    func testTokens_3Characters() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "foo").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Word(string: "foo")])
+        XCTAssertEqual(tokens, [Word("foo")])
     }
 
-    func testTokens_2Words_ReturnsWords() {
+    func testTokens_2Words() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "   foo   bar   ").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Word(string: "foo"), Word(string: "bar")])
+        XCTAssertEqual(tokens, [Word("foo"), Word("bar")])
     }
 
-    func testTokens_Sentence_ReturnsWords() {
+    func testTokens_Sentence() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "Lorem ipsum dolor sit amet! Consectetur?").tokens()) else { return }
 
-        let expectedWords = ["Lorem", "ipsum", "dolor", "sit", "amet!", "Consectetur?"].map(Word.init(string:))
+        let expectedWords = ["Lorem", "ipsum", "dolor", "sit", "amet!", "Consectetur?"].map(Word.init)
         XCTAssertEqual(tokens, expectedWords)
     }
-    
+
+
+    // MARK: Parens
+
+    func testTokens_OpeningParens() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "(").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [OpeningParens()])
+    }
+
+    func testTokens_OpeningParensWithWhitespace() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "   (     ").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [OpeningParens()])
+    }
+
+    func testTokens_5OpeningParens() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "(((((").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [OpeningParens(), OpeningParens(), OpeningParens(), OpeningParens(), OpeningParens()])
+    }
+
+    func testTokens_ClosingParens() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: ")").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [ClosingParens()])
+    }
+
+    func testTokens_ClosingParensWithWhitespace() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: " \t  )   ").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [ClosingParens()])
+    }
+
+    func testTokens_4ClosingParens() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "))))").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [ClosingParens(), ClosingParens(), ClosingParens(), ClosingParens()])
+    }
+
+    func testTokens_ParenthesizedWord() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "(red)").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [OpeningParens(), Word("red"), ClosingParens()])
+    }
+
+    func testTokens_ParenthesizedWordWithWhitespace() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "    ( red) ").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [OpeningParens(), Word("red"), ClosingParens()])
+    }
+
+    func testTokens_MixedWordsAndParens() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "))Yes, mighty warrior) what (you) hear now").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [ClosingParens(), ClosingParens(), Word("Yes,"), Word("mighty"), Word("warrior"), ClosingParens(), Word("what"), OpeningParens(), Word("you"), ClosingParens(), Word("hear"), Word("now")])
+    }
 }

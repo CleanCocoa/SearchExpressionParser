@@ -11,7 +11,7 @@
 extension Character {
     var isWhitespace: Bool {
         switch self {
-            // From CoreFoundation/CFUniChar.c:297
+        // From CoreFoundation/CFUniChar.c:297
         // http://www.opensource.apple.com/source/CF/CF-1151.16/CFUniChar.c
         case "\u{0020}": return true
         case "\u{0009}": return true

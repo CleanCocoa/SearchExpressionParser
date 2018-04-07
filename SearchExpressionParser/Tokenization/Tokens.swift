@@ -6,7 +6,15 @@ public protocol Token {
 
 public struct Word: Token {
     public let string: String
-    public init(string: String) {
+    public init(_ string: String) {
         self.string = string
     }
+}
+
+public struct OpeningParens: Token {
+    public let string = "("
+}
+
+public struct ClosingParens: Token {
+    public let string = ")"
 }

@@ -5,7 +5,8 @@ import SearchExpressionParser
 
 func ==(lhs: Token, rhs: Token) -> Bool {
 
-    return lhs.string == rhs.string
+    return type(of: lhs) == type(of: rhs)
+        && lhs.string == rhs.string
 }
 
 func XCTAssertEqual(

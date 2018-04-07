@@ -9,7 +9,7 @@ internal struct WordExtractor: TokenExtractor {
 
         let start = buffer.currentIndex
 
-        while buffer.peekNext()?.isWhitespace == false {
+        while buffer.peekNext()?.isWordConsumable == true {
             buffer.consume()
         }
 
@@ -17,6 +17,19 @@ internal struct WordExtractor: TokenExtractor {
         let range: Range<Int> = start ..< end
         let string = buffer[range]
 
-        return .value(Word(string: string))
+        return .value(Word(string))
+    }
+}
+
+fileprivate extension Character {
+    var isWordConsumable: Bool {
+        return !isWhitespace && !isParens
+    }
+
+    var isParens: Bool {
+        switch self {
+        case "(", ")": return true
+        default: return false
+        }
     }
 }
