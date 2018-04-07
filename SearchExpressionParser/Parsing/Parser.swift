@@ -28,7 +28,8 @@ public struct Parser {
         case .none:
             return AnythingNode()
 
-        case .some(UnaryOperator.bang):
+        case .some(UnaryOperator.bang),
+             .some(UnaryOperator.not):
             return try parseNegation(tokenBuffer)
 
         case .some(_):
@@ -54,7 +55,8 @@ public struct Parser {
         }
 
         switch negatableToken {
-        case UnaryOperator.bang:
+        case UnaryOperator.bang,
+             UnaryOperator.not:
             return try parseNegation(tokenBuffer)
 
         case _:
