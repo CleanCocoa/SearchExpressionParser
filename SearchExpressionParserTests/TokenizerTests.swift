@@ -136,4 +136,35 @@ class TokenizerTests: XCTestCase {
 
         XCTAssertEqual(tokens, [ClosingParens(), ClosingParens(), Word("Yes,"), Word("mighty"), Word("warrior"), ClosingParens(), Word("what"), OpeningParens(), Word("you"), ClosingParens(), Word("hear"), Word("now")])
     }
+
+
+    // MARK: Quotation marks
+
+    func testTokens_Quotation() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\"").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [QuotationMark()])
+    }
+
+    func testTokens_QuotationWithWhitespae() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "   \"   ").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [QuotationMark()])
+    }
+
+    func testTokens_QuotedWord() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\"justice\"").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [QuotationMark(), Word("justice"), QuotationMark()])
+    }
+
+    func testTokens_QuotedPhrase() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\"fair play\"").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [QuotationMark(), Word("fair"), Word("play"), QuotationMark()])
+    }
 }

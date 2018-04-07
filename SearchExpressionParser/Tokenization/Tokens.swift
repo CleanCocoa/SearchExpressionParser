@@ -18,3 +18,7 @@ public struct OpeningParens: Token {
 public struct ClosingParens: Token {
     public let string = ")"
 }
+
+public struct QuotationMark: Token {
+    public let string = "\""
+}

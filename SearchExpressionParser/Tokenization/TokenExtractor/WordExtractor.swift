@@ -23,7 +23,7 @@ internal struct WordExtractor: TokenExtractor {
 
 fileprivate extension Character {
     var isWordConsumable: Bool {
-        return !isWhitespace && !isParens
+        return !isWhitespace && !isParens && !isQuotationMark
     }
 
     var isParens: Bool {
@@ -31,5 +31,9 @@ fileprivate extension Character {
         case "(", ")": return true
         default: return false
         }
+    }
+
+    var isQuotationMark: Bool {
+        return self == "\""
     }
 }

@@ -20,6 +20,7 @@
 		5048DF922078A61800BAA4B0 /* WordExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF912078A61800BAA4B0 /* WordExtractor.swift */; };
 		5048DF942078A93A00BAA4B0 /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF932078A93A00BAA4B0 /* Tokens.swift */; };
 		5048DF962078AB2A00BAA4B0 /* ParensExtractors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF952078AB2A00BAA4B0 /* ParensExtractors.swift */; };
+		5048DF982078B1D700BAA4B0 /* QuotationMarkExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF972078B1D700BAA4B0 /* QuotationMarkExtractor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		5048DF912078A61800BAA4B0 /* WordExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordExtractor.swift; sourceTree = "<group>"; };
 		5048DF932078A93A00BAA4B0 /* Tokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
 		5048DF952078AB2A00BAA4B0 /* ParensExtractors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParensExtractors.swift; sourceTree = "<group>"; };
+		5048DF972078B1D700BAA4B0 /* QuotationMarkExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotationMarkExtractor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 				5048DF8120789DE400BAA4B0 /* TokenExtractor.swift */,
 				5048DF912078A61800BAA4B0 /* WordExtractor.swift */,
 				5048DF952078AB2A00BAA4B0 /* ParensExtractors.swift */,
+				5048DF972078B1D700BAA4B0 /* QuotationMarkExtractor.swift */,
 			);
 			path = TokenExtractor;
 			sourceTree = "<group>";
@@ -243,6 +246,7 @@
 			files = (
 				5048DF8420789E1C00BAA4B0 /* Either.swift in Sources */,
 				5048DF7B2078990100BAA4B0 /* Tokenizer.swift in Sources */,
+				5048DF982078B1D700BAA4B0 /* QuotationMarkExtractor.swift in Sources */,
 				5048DF8220789DE400BAA4B0 /* TokenExtractor.swift in Sources */,
 				5048DF7D20789B5000BAA4B0 /* TokenCharacterBuffer.swift in Sources */,
 				5048DF962078AB2A00BAA4B0 /* ParensExtractors.swift in Sources */,

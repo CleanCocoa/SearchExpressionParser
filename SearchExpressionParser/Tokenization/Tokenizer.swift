@@ -7,6 +7,7 @@ public struct Tokenizer {
         return [
             OpeningParensExtractor(),
             ClosingParensExtractor(),
+            QuotationMarkExtractor(),
             WordExtractor() // Wildcard extractor comes last
         ]
     }
@@ -72,6 +73,7 @@ extension TokenCharacterBuffer {
 internal struct TokenizerError: Error {
     enum Kind {
         case cannotExtractOpeningParens
+        case cannotExtractQuotationMark
     }
 
     let kind: Kind
