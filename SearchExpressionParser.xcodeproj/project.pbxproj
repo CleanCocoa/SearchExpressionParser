@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		5048DF682078985800BAA4B0 /* SearchExpressionParser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5048DF5E2078985800BAA4B0 /* SearchExpressionParser.framework */; };
-		5048DF6D2078985800BAA4B0 /* SearchExpressionParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF6C2078985800BAA4B0 /* SearchExpressionParserTests.swift */; };
+		5048DF6D2078985800BAA4B0 /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF6C2078985800BAA4B0 /* LexerTests.swift */; };
 		5048DF6F2078985800BAA4B0 /* SearchExpressionParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 5048DF612078985800BAA4B0 /* SearchExpressionParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5048DF7F20789C7B00BAA4B0 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 5048DF7E20789C7B00BAA4B0 /* LICENSE */; };
-
+		5048DF7B2078990100BAA4B0 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF7A2078990100BAA4B0 /* Tokenizer.swift */; };
+		5048DF7D20789B5000BAA4B0 /* TokenCharacterBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF7C20789B5000BAA4B0 /* TokenCharacterBuffer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,9 +29,10 @@
 		5048DF612078985800BAA4B0 /* SearchExpressionParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchExpressionParser.h; sourceTree = "<group>"; };
 		5048DF622078985800BAA4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5048DF672078985800BAA4B0 /* SearchExpressionParserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SearchExpressionParserTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5048DF6C2078985800BAA4B0 /* SearchExpressionParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchExpressionParserTests.swift; sourceTree = "<group>"; };
+		5048DF6C2078985800BAA4B0 /* LexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
 		5048DF6E2078985800BAA4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5048DF7E20789C7B00BAA4B0 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		5048DF7A2078990100BAA4B0 /* Tokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
+		5048DF7C20789B5000BAA4B0 /* TokenCharacterBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCharacterBuffer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +77,8 @@
 			isa = PBXGroup;
 			children = (
 				5048DF612078985800BAA4B0 /* SearchExpressionParser.h */,
+				5048DF7A2078990100BAA4B0 /* Tokenizer.swift */,
+				5048DF7C20789B5000BAA4B0 /* TokenCharacterBuffer.swift */,
 				5048DF622078985800BAA4B0 /* Info.plist */,
 			);
 			path = SearchExpressionParser;
@@ -84,7 +87,7 @@
 		5048DF6B2078985800BAA4B0 /* SearchExpressionParserTests */ = {
 			isa = PBXGroup;
 			children = (
-				5048DF6C2078985800BAA4B0 /* SearchExpressionParserTests.swift */,
+				5048DF6C2078985800BAA4B0 /* LexerTests.swift */,
 				5048DF6E2078985800BAA4B0 /* Info.plist */,
 			);
 			path = SearchExpressionParserTests;
@@ -200,6 +203,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5048DF7B2078990100BAA4B0 /* Tokenizer.swift in Sources */,
+				5048DF7D20789B5000BAA4B0 /* TokenCharacterBuffer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +212,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5048DF6D2078985800BAA4B0 /* SearchExpressionParserTests.swift in Sources */,
+				5048DF6D2078985800BAA4B0 /* LexerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
