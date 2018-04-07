@@ -8,10 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		5048DF682078985800BAA4B0 /* SearchExpressionParser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5048DF5E2078985800BAA4B0 /* SearchExpressionParser.framework */; };
-		5048DF6D2078985800BAA4B0 /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF6C2078985800BAA4B0 /* LexerTests.swift */; };
+		5048DF6D2078985800BAA4B0 /* TokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF6C2078985800BAA4B0 /* TokenizerTests.swift */; };
 		5048DF6F2078985800BAA4B0 /* SearchExpressionParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 5048DF612078985800BAA4B0 /* SearchExpressionParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5048DF7B2078990100BAA4B0 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF7A2078990100BAA4B0 /* Tokenizer.swift */; };
 		5048DF7D20789B5000BAA4B0 /* TokenCharacterBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF7C20789B5000BAA4B0 /* TokenCharacterBuffer.swift */; };
+		5048DF8220789DE400BAA4B0 /* TokenExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF8120789DE400BAA4B0 /* TokenExtractor.swift */; };
+		5048DF8420789E1C00BAA4B0 /* Either.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF8320789E1C00BAA4B0 /* Either.swift */; };
+		5048DF8620789FD300BAA4B0 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF8520789FD300BAA4B0 /* TestHelpers.swift */; };
+		5048DF8D2078A3C600BAA4B0 /* XCTAssertEqual+Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF8C2078A3C600BAA4B0 /* XCTAssertEqual+Token.swift */; };
+		5048DF8F2078A49600BAA4B0 /* Character+isWhitespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF8E2078A49600BAA4B0 /* Character+isWhitespace.swift */; };
+		5048DF922078A61800BAA4B0 /* WordExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF912078A61800BAA4B0 /* WordExtractor.swift */; };
+		5048DF942078A93A00BAA4B0 /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF932078A93A00BAA4B0 /* Tokens.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,10 +36,17 @@
 		5048DF612078985800BAA4B0 /* SearchExpressionParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchExpressionParser.h; sourceTree = "<group>"; };
 		5048DF622078985800BAA4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5048DF672078985800BAA4B0 /* SearchExpressionParserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SearchExpressionParserTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5048DF6C2078985800BAA4B0 /* LexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
+		5048DF6C2078985800BAA4B0 /* TokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenizerTests.swift; sourceTree = "<group>"; };
 		5048DF6E2078985800BAA4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5048DF7A2078990100BAA4B0 /* Tokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
 		5048DF7C20789B5000BAA4B0 /* TokenCharacterBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCharacterBuffer.swift; sourceTree = "<group>"; };
+		5048DF8120789DE400BAA4B0 /* TokenExtractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenExtractor.swift; sourceTree = "<group>"; };
+		5048DF8320789E1C00BAA4B0 /* Either.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Either.swift; sourceTree = "<group>"; };
+		5048DF8520789FD300BAA4B0 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
+		5048DF8C2078A3C600BAA4B0 /* XCTAssertEqual+Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTAssertEqual+Token.swift"; sourceTree = "<group>"; };
+		5048DF8E2078A49600BAA4B0 /* Character+isWhitespace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+isWhitespace.swift"; sourceTree = "<group>"; };
+		5048DF912078A61800BAA4B0 /* WordExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordExtractor.swift; sourceTree = "<group>"; };
+		5048DF932078A93A00BAA4B0 /* Tokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +71,6 @@
 		5048DF542078985800BAA4B0 = {
 			isa = PBXGroup;
 			children = (
-				5048DF7E20789C7B00BAA4B0 /* LICENSE */,
 				5048DF602078985800BAA4B0 /* SearchExpressionParser */,
 				5048DF6B2078985800BAA4B0 /* SearchExpressionParserTests */,
 				5048DF5F2078985800BAA4B0 /* Products */,
@@ -77,8 +90,8 @@
 			isa = PBXGroup;
 			children = (
 				5048DF612078985800BAA4B0 /* SearchExpressionParser.h */,
-				5048DF7A2078990100BAA4B0 /* Tokenizer.swift */,
-				5048DF7C20789B5000BAA4B0 /* TokenCharacterBuffer.swift */,
+				5048DF8020789DC800BAA4B0 /* Tokenization */,
+				5048DF8320789E1C00BAA4B0 /* Either.swift */,
 				5048DF622078985800BAA4B0 /* Info.plist */,
 			);
 			path = SearchExpressionParser;
@@ -87,10 +100,33 @@
 		5048DF6B2078985800BAA4B0 /* SearchExpressionParserTests */ = {
 			isa = PBXGroup;
 			children = (
-				5048DF6C2078985800BAA4B0 /* LexerTests.swift */,
+				5048DF6C2078985800BAA4B0 /* TokenizerTests.swift */,
+				5048DF8520789FD300BAA4B0 /* TestHelpers.swift */,
+				5048DF8C2078A3C600BAA4B0 /* XCTAssertEqual+Token.swift */,
 				5048DF6E2078985800BAA4B0 /* Info.plist */,
 			);
 			path = SearchExpressionParserTests;
+			sourceTree = "<group>";
+		};
+		5048DF8020789DC800BAA4B0 /* Tokenization */ = {
+			isa = PBXGroup;
+			children = (
+				5048DF7A2078990100BAA4B0 /* Tokenizer.swift */,
+				5048DF932078A93A00BAA4B0 /* Tokens.swift */,
+				5048DF7C20789B5000BAA4B0 /* TokenCharacterBuffer.swift */,
+				5048DF902078A60700BAA4B0 /* TokenExtractor */,
+				5048DF8E2078A49600BAA4B0 /* Character+isWhitespace.swift */,
+			);
+			path = Tokenization;
+			sourceTree = "<group>";
+		};
+		5048DF902078A60700BAA4B0 /* TokenExtractor */ = {
+			isa = PBXGroup;
+			children = (
+				5048DF8120789DE400BAA4B0 /* TokenExtractor.swift */,
+				5048DF912078A61800BAA4B0 /* WordExtractor.swift */,
+			);
+			path = TokenExtractor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -185,7 +221,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5048DF7F20789C7B00BAA4B0 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,8 +238,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5048DF8420789E1C00BAA4B0 /* Either.swift in Sources */,
 				5048DF7B2078990100BAA4B0 /* Tokenizer.swift in Sources */,
+				5048DF8220789DE400BAA4B0 /* TokenExtractor.swift in Sources */,
 				5048DF7D20789B5000BAA4B0 /* TokenCharacterBuffer.swift in Sources */,
+				5048DF922078A61800BAA4B0 /* WordExtractor.swift in Sources */,
+				5048DF8F2078A49600BAA4B0 /* Character+isWhitespace.swift in Sources */,
+				5048DF942078A93A00BAA4B0 /* Tokens.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,7 +252,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5048DF6D2078985800BAA4B0 /* LexerTests.swift in Sources */,
+				5048DF6D2078985800BAA4B0 /* TokenizerTests.swift in Sources */,
+				5048DF8D2078A3C600BAA4B0 /* XCTAssertEqual+Token.swift in Sources */,
+				5048DF8620789FD300BAA4B0 /* TestHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

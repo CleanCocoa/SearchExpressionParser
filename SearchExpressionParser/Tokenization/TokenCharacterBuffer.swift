@@ -1,11 +1,10 @@
 //
 //  TokenCharacterBuffer.swift
-//  DDMathParser
+//  <https://github.com/davedelong/DDMathParser>
 //
-//  Created by Dave DeLong on 8/6/15.
+//  Copyright (c) 2010-2018 Dave DeLong
+//  Licensed under the MIT License.
 //
-
-import Foundation
 
 internal final class TokenCharacterBuffer {
     private let characters: Array<Character>
