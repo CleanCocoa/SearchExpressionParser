@@ -25,6 +25,12 @@
 		5048DF9E2078BC3C00BAA4B0 /* NotExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF9D2078BC3C00BAA4B0 /* NotExtractor.swift */; };
 		5048DFA02078BF3600BAA4B0 /* AndExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF9F2078BF3600BAA4B0 /* AndExtractor.swift */; };
 		5048DFA22078C02400BAA4B0 /* OrExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFA12078C02400BAA4B0 /* OrExtractor.swift */; };
+		5048DFA62078CFB700BAA4B0 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFA52078CFB700BAA4B0 /* Parser.swift */; };
+		5048DFA82078CFF500BAA4B0 /* Expressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFA72078CFF500BAA4B0 /* Expressions.swift */; };
+		5048DFAA2078D00F00BAA4B0 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFA92078D00F00BAA4B0 /* ParserTests.swift */; };
+		5048DFAC2078D0F900BAA4B0 /* AnyEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFAB2078D0F900BAA4B0 /* AnyEquatable.swift */; };
+		5048DFAE2078D50500BAA4B0 /* TokenBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFAD2078D50500BAA4B0 /* TokenBuffer.swift */; };
+		5048DFB02078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFAF2078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +65,12 @@
 		5048DF9D2078BC3C00BAA4B0 /* NotExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotExtractor.swift; sourceTree = "<group>"; };
 		5048DF9F2078BF3600BAA4B0 /* AndExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndExtractor.swift; sourceTree = "<group>"; };
 		5048DFA12078C02400BAA4B0 /* OrExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrExtractor.swift; sourceTree = "<group>"; };
+		5048DFA52078CFB700BAA4B0 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		5048DFA72078CFF500BAA4B0 /* Expressions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expressions.swift; sourceTree = "<group>"; };
+		5048DFA92078D00F00BAA4B0 /* ParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
+		5048DFAB2078D0F900BAA4B0 /* AnyEquatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEquatable.swift; sourceTree = "<group>"; };
+		5048DFAD2078D50500BAA4B0 /* TokenBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBuffer.swift; sourceTree = "<group>"; };
+		5048DFAF2078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTAssertEqual+Expression.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +115,7 @@
 			children = (
 				5048DF612078985800BAA4B0 /* SearchExpressionParser.h */,
 				5048DF8020789DC800BAA4B0 /* Tokenization */,
+				5048DFA42078CFA400BAA4B0 /* Parsing */,
 				5048DF8320789E1C00BAA4B0 /* Either.swift */,
 				5048DF622078985800BAA4B0 /* Info.plist */,
 			);
@@ -113,8 +126,11 @@
 			isa = PBXGroup;
 			children = (
 				5048DF6C2078985800BAA4B0 /* TokenizerTests.swift */,
+				5048DFA92078D00F00BAA4B0 /* ParserTests.swift */,
 				5048DF8520789FD300BAA4B0 /* TestHelpers.swift */,
+				5048DFAF2078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift */,
 				5048DF8C2078A3C600BAA4B0 /* XCTAssertEqual+Token.swift */,
+				5048DFAB2078D0F900BAA4B0 /* AnyEquatable.swift */,
 				5048DF6E2078985800BAA4B0 /* Info.plist */,
 			);
 			path = SearchExpressionParserTests;
@@ -153,6 +169,16 @@
 				5048DFA12078C02400BAA4B0 /* OrExtractor.swift */,
 			);
 			name = Operators;
+			sourceTree = "<group>";
+		};
+		5048DFA42078CFA400BAA4B0 /* Parsing */ = {
+			isa = PBXGroup;
+			children = (
+				5048DFA52078CFB700BAA4B0 /* Parser.swift */,
+				5048DFA72078CFF500BAA4B0 /* Expressions.swift */,
+				5048DFAD2078D50500BAA4B0 /* TokenBuffer.swift */,
+			);
+			path = Parsing;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -270,6 +296,8 @@
 				5048DF8220789DE400BAA4B0 /* TokenExtractor.swift in Sources */,
 				5048DF7D20789B5000BAA4B0 /* TokenCharacterBuffer.swift in Sources */,
 				5048DF9E2078BC3C00BAA4B0 /* NotExtractor.swift in Sources */,
+				5048DFA62078CFB700BAA4B0 /* Parser.swift in Sources */,
+				5048DFAE2078D50500BAA4B0 /* TokenBuffer.swift in Sources */,
 				5048DF962078AB2A00BAA4B0 /* ParensExtractors.swift in Sources */,
 				5048DF922078A61800BAA4B0 /* WordExtractor.swift in Sources */,
 				5048DF9C2078B6F600BAA4B0 /* BangExtractor.swift in Sources */,
@@ -277,6 +305,7 @@
 				5048DFA22078C02400BAA4B0 /* OrExtractor.swift in Sources */,
 				5048DF8F2078A49600BAA4B0 /* Character+isWhitespace.swift in Sources */,
 				5048DF942078A93A00BAA4B0 /* Tokens.swift in Sources */,
+				5048DFA82078CFF500BAA4B0 /* Expressions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,8 +313,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5048DFAA2078D00F00BAA4B0 /* ParserTests.swift in Sources */,
 				5048DF6D2078985800BAA4B0 /* TokenizerTests.swift in Sources */,
+				5048DFB02078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift in Sources */,
 				5048DF8D2078A3C600BAA4B0 /* XCTAssertEqual+Token.swift in Sources */,
+				5048DFAC2078D0F900BAA4B0 /* AnyEquatable.swift in Sources */,
 				5048DF8620789FD300BAA4B0 /* TestHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
