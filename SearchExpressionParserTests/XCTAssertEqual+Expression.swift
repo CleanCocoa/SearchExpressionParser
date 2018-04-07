@@ -4,12 +4,21 @@ import XCTest
 import SearchExpressionParser
 
 func ==(lhs: Expression, rhs: Expression) -> Bool {
+
     switch (lhs, rhs) {
-    case (is AnythingNode, is AnythingNode):
+    case (is AnythingNode,
+          is AnythingNode):
         return true
-    case let (lhs as ContainsNode,
-              rhs as ContainsNode):
-        return lhs.string == rhs.string
+
+    case let (lContains as ContainsNode,
+              rContains as ContainsNode):
+        return lContains.string == rContains.string
+
+    case let (lAnd as AndNode,
+              rAnd as AndNode):
+        return lAnd.lhs == rAnd.lhs
+            && lAnd.rhs == rAnd.rhs
+
     default:
         return false
     }

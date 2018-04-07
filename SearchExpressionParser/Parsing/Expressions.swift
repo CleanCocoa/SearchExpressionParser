@@ -11,4 +11,18 @@ public struct ContainsNode: Expression {
     public init(_ string: String) {
         self.string = string
     }
+
+    public init(token: Token) {
+        self.init(token.string)
+    }
+}
+
+public struct AndNode: Expression {
+    public let lhs: Expression
+    public let rhs: Expression
+
+    public init(_ lhs: Expression, _ rhs: Expression) {
+        self.lhs = lhs
+        self.rhs = rhs
+    }
 }

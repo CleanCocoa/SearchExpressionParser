@@ -12,10 +12,12 @@ public struct Parser {
 
         let tokenBuffer = TokenBuffer(tokens: tokens)
 
-        if let phrase = tokenBuffer.popToken() as? Phrase {
-            return ContainsNode(phrase.string)
+        guard let first = tokenBuffer.popToken() else { return AnythingNode() }
+
+        if let next = tokenBuffer.popToken() {
+            return AndNode(ContainsNode(token: first), ContainsNode(token: next))
         }
 
-        return AnythingNode()
+        return ContainsNode(token: first)
     }
 }

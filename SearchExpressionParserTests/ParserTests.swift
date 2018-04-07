@@ -16,4 +16,11 @@ class ParserTests: XCTestCase {
 
         XCTAssertEqual(expression, ContainsNode("foo bar"))
     }
+
+    func testExpression_TwoPhrases() {
+        let tokens: [Token] = [Phrase("foo"), Phrase("bar")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(expression, AndNode(ContainsNode("foo"), ContainsNode("bar")))
+    }
 }
