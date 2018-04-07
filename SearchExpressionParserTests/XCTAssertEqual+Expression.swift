@@ -19,6 +19,11 @@ func ==(lhs: Expression, rhs: Expression) -> Bool {
         return lAnd.lhs == rAnd.lhs
             && lAnd.rhs == rAnd.rhs
 
+    case let (lOr as OrNode,
+              rOr as OrNode):
+        return lOr.lhs == rOr.lhs
+            && lOr.rhs == rOr.rhs
+
     default:
         return false
     }

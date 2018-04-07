@@ -26,3 +26,13 @@ public struct AndNode: Expression {
         self.rhs = rhs
     }
 }
+
+public struct OrNode: Expression {
+    public let lhs: Expression
+    public let rhs: Expression
+
+    public init(_ lhs: Expression, _ rhs: Expression) {
+        self.lhs = lhs
+        self.rhs = rhs
+    }
+}

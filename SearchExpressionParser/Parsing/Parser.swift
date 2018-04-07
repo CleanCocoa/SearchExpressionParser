@@ -51,6 +51,12 @@ public struct Parser {
             let rhs = try parseExpression(tokenBuffer)
             return AndNode(lhs, rhs)
 
+        case BinaryOperator.or:
+            _ = tokenBuffer.popToken()
+            guard tokenBuffer.isNotAtEnd else { return AndNode(lhs, ContainsNode(token: operatorToken)) }
+            let rhs = try parseExpression(tokenBuffer)
+            return OrNode(lhs, rhs)
+
         default:
             let rhs = try parseExpression(tokenBuffer)
             return AndNode(lhs, rhs)

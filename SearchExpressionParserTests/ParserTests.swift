@@ -17,6 +17,9 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(expression, ContainsNode("foo bar"))
     }
 
+
+    // MARK: AND Operator
+
     func testExpression_TwoPhrases() {
         let tokens: [Token] = [Phrase("foo"), Phrase("bar")]
         guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
@@ -110,6 +113,77 @@ class ParserTests: XCTestCase {
             AndNode(
                 ContainsNode("foo"),
                 AndNode(
+                    ContainsNode("bar"),
+                    ContainsNode("baz"))))
+    }
+
+    
+    // MARK: OR Operator
+
+    func testExpression_OR() {
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: [BinaryOperator.or]).expression()) else { return }
+
+        XCTAssertEqual(expression, ContainsNode("OR"))
+    }
+
+    func testExpression_PhraseBeforeOR() {
+        let tokens: [Token] = [Phrase("foo"), BinaryOperator.or]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                ContainsNode("foo"),
+                ContainsNode("OR")))
+    }
+
+    func testExpression_ORBeforePhrase() {
+        let tokens: [Token] = [BinaryOperator.or, Phrase("foo")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                ContainsNode("OR"),
+                ContainsNode("foo")))
+    }
+
+    func testExpression_2PhrasesORConnected() {
+        let tokens: [Token] = [
+            Phrase("foo"), BinaryOperator.or, Phrase("bar")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            OrNode(
+                ContainsNode("foo"),
+                ContainsNode("bar")))
+    }
+
+    func testExpression_PhrasesANDandORConnected() {
+        let tokens: [Token] = [
+            Phrase("foo"), BinaryOperator.or, Phrase("bar"), BinaryOperator.and, Phrase("baz")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            OrNode(
+                ContainsNode("foo"),
+                AndNode(
+                    ContainsNode("bar"),
+                    ContainsNode("baz"))))
+    }
+
+    func testExpression_AdjacentPhrasesAndORConnection() {
+        let tokens: [Token] = [
+            Phrase("foo"), Phrase("bar"), BinaryOperator.or, Phrase("baz")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                ContainsNode("foo"),
+                OrNode(
                     ContainsNode("bar"),
                     ContainsNode("baz"))))
     }
