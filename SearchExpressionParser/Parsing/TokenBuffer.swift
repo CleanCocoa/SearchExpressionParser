@@ -16,8 +16,11 @@ internal final class TokenBuffer {
         return !isAtEnd
     }
 
-    func peekToken() -> Token? {
-        return tokens[safe: currentIndex]
+    func peekToken(_ delta: Int = 0) -> Token? {
+        guard delta >= 0 else {
+            fatalError("Cannot peek into the past")
+        }
+        return tokens[safe: currentIndex + delta]
     }
 
     func popToken() -> Token? {

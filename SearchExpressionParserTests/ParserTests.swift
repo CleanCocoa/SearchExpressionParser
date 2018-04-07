@@ -56,4 +56,61 @@ class ParserTests: XCTestCase {
                                 ContainsNode("6")))))))
 
     }
+
+    func testExpression_AND() {
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: [BinaryOperator.and]).expression()) else { return }
+
+        XCTAssertEqual(expression, ContainsNode("AND"))
+    }
+
+    func testExpression_PhraseBeforeAND() {
+        let tokens: [Token] = [Phrase("foo"), BinaryOperator.and]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                ContainsNode("foo"),
+                ContainsNode("AND")))
+    }
+
+    func testExpression_ANDBeforePhrase() {
+        let tokens: [Token] = [BinaryOperator.and, Phrase("foo")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                ContainsNode("AND"),
+                ContainsNode("foo")))
+    }
+
+    func testExpression_2PhrasesANDConnected() {
+        let tokens: [Token] = [
+            Phrase("foo"), BinaryOperator.and, Phrase("bar")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                ContainsNode("foo"),
+                ContainsNode("bar")))
+    }
+
+
+    func testExpression_3PhrasesANDConnected() {
+        let tokens: [Token] = [
+            Phrase("foo"), BinaryOperator.and,
+            Phrase("bar"), BinaryOperator.and,
+            Phrase("baz")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                ContainsNode("foo"),
+                AndNode(
+                    ContainsNode("bar"),
+                    ContainsNode("baz"))))
+    }
 }

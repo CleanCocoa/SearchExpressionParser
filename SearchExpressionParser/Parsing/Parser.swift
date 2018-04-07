@@ -13,27 +13,47 @@ public struct Parser {
     public func expression() throws -> Expression {
 
         let tokenBuffer = TokenBuffer(tokens: tokens)
+        return try parseExpression(tokenBuffer)
+    }
 
-        guard let next = parseExpression(tokenBuffer: tokenBuffer) else { return AnythingNode() }
+    private func parseExpression(_ tokenBuffer: TokenBuffer) throws -> Expression {
 
-        switch next {
-        case .error(let error):
-            throw error
-        case .value(let expression):
-            return expression
+        let node = try parsePrimary(tokenBuffer)
+        return try parseBinaryOperator(tokenBuffer, lhs: node)
+    }
+
+    private func parsePrimary(_ tokenBuffer: TokenBuffer) throws -> Expression {
+
+        switch tokenBuffer.peekToken() {
+        case .none:
+            return AnythingNode()
+
+        default:
+            return try parseContainsNode(tokenBuffer)
         }
     }
 
-    private func parseExpression(tokenBuffer: TokenBuffer) -> Result? {
+    private func parseContainsNode(_ tokenBuffer: TokenBuffer) throws -> Expression {
 
-        guard let current = tokenBuffer.popToken() else { return nil }
-        guard let next = parseExpression(tokenBuffer: tokenBuffer) else { return .value(ContainsNode(token: current)) }
+        guard let current = tokenBuffer.popToken() else {
+            throw ParseError.expectedTokenAtExpressionStart
+        }
+        return ContainsNode(token: current)
+    }
 
-        switch next {
-        case .error(_):
-            return next
-        case .value(let nextExpression):
-            return .value(AndNode(ContainsNode(token: current), nextExpression))
+    private func parseBinaryOperator(_ tokenBuffer: TokenBuffer, lhs: Expression) throws -> Expression {
+        guard let operatorToken = tokenBuffer.peekToken() else { return lhs }
+
+        switch operatorToken {
+        case BinaryOperator.and:
+            _ = tokenBuffer.popToken()
+            guard tokenBuffer.isNotAtEnd else { return AndNode(lhs, ContainsNode(token: operatorToken)) }
+            let rhs = try parseExpression(tokenBuffer)
+            return AndNode(lhs, rhs)
+
+        default:
+            let rhs = try parseExpression(tokenBuffer)
+            return AndNode(lhs, rhs)
         }
     }
 }
