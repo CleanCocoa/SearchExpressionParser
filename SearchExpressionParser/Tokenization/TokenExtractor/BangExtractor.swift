@@ -12,12 +12,12 @@ internal struct BangExtractor: TokenExtractor {
             && buffer.peekNext(1)?.isWhitespace == false
             else {
             return .error(TokenizerError(
-                kind: .cannotExtractOperator(.bang),
+                kind: .cannotExtractOperator(.not),
                 index: buffer.currentIndex))
         }
 
         buffer.consume(1)
 
-        return .value(Operator.bang)
+        return .value(Operator.not)
     }
 }
