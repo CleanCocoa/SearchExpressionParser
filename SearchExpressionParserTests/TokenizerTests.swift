@@ -26,19 +26,52 @@ class TokenizerTests: XCTestCase {
         XCTAssert(tokens.isEmpty)
     }
 
+
+    // MARK: Escape Character
+
     func testTokens_EscapeCharacter() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Escaping()])
+        XCTAssertEqual(tokens, [Word("\\")])
     }
 
     func testTokens_EscapedEscapeCharacter() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\\\").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Escaping(), Escaping()])
+        XCTAssertEqual(tokens, [Word("\\")])
     }
+
+    func testTokens_EscapedLetter() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\a").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("a")])
+    }
+
+    func testTokens_EscapedEscapeAndLetter() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\\\a").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("\\a")])
+    }
+
+    func testTokens_EscapedLetterInWord() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "you\\know").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("youknow")])
+    }
+
+    func testTokens_EscapedEscapeInWord() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "a\\\\b").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("a\\b")])
+    }
+
+
 
     // MARK: Simple words
 
@@ -99,7 +132,7 @@ class TokenizerTests: XCTestCase {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\(").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Escaping(), OpeningParens()])
+        XCTAssertEqual(tokens, [Word("(")])
     }
 
     func testTokens_5OpeningParens() {
@@ -127,7 +160,7 @@ class TokenizerTests: XCTestCase {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\)").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Escaping(), ClosingParens()])
+        XCTAssertEqual(tokens, [Word(")")])
     }
 
     func testTokens_4ClosingParens() {
@@ -170,7 +203,7 @@ class TokenizerTests: XCTestCase {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\\"").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Escaping(), QuotationMark()])
+        XCTAssertEqual(tokens, [Word("\"")])
     }
 
     func testTokens_QuotationWithWhitespae() {

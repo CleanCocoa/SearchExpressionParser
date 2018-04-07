@@ -7,17 +7,19 @@ internal struct WordExtractor: TokenExtractor {
 
     func extract(_ buffer: TokenCharacterBuffer) -> Tokenizer.Result {
 
-        let start = buffer.currentIndex
+        var characters = [Character]()
 
-        while buffer.peekNext()?.isWordConsumable == true {
-            buffer.consume()
+        while buffer.isNotAtEnd && buffer.peekNext()?.isWordConsumable == true {
+            if     buffer.peekNext(0) == "\\"
+                && buffer.peekNext(1) != nil {
+                buffer.consume(1) // Skip the '\'
+            }
+
+            characters.append(buffer[buffer.currentIndex])
+            buffer.consume(1)
         }
 
-        let end = buffer.currentIndex
-        let range: Range<Int> = start ..< end
-        let string = buffer[range]
-
-        return .value(Word(string))
+        return .value(Word(String(characters)))
     }
 }
 
@@ -26,11 +28,6 @@ fileprivate extension Character {
         return !isWhitespace
             && !isParens
             && !isQuotationMark
-            && !isEscapeChar
-    }
-
-    var isEscapeChar: Bool {
-        return self == "\\"
     }
 
     var isParens: Bool {
