@@ -14,13 +14,13 @@ internal struct OrExtractor: TokenExtractor {
             && buffer.peekNext(2)?.isWhitespace == true
             else {
                 return .error(TokenizerError(
-                    kind: .cannotExtractOperator(.not),
+                    kind: .cannotExtractBinaryOperator(.or),
                     range: buffer.currentIndex ..< buffer.currentIndex + 2))
         }
 
         buffer.consume(2)
 
-        return .value(Operator.or)
+        return .value(BinaryOperator.or)
     }
 }
 

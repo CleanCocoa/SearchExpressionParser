@@ -258,7 +258,7 @@ class TokenizerTests: XCTestCase {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "!word").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.bang, Word("word")])
+        XCTAssertEqual(tokens, [UnaryOperator.bang, Word("word")])
     }
 
     func testTokens_BangedWordWithWhitespace_ThisDoesntFeelRight() {
@@ -272,14 +272,14 @@ class TokenizerTests: XCTestCase {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "!!").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.bang, Word("!")])
+        XCTAssertEqual(tokens, [UnaryOperator.bang, Word("!")])
     }
 
     func testTokens_5BangsBeforeWord_ThisKindaLookedBetterBeforeIAddedTheOthers() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "!!!!!foo").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.bang, Operator.bang, Operator.bang, Operator.bang, Operator.bang, Word("foo")])
+        XCTAssertEqual(tokens, [UnaryOperator.bang, UnaryOperator.bang, UnaryOperator.bang, UnaryOperator.bang, UnaryOperator.bang, Word("foo")])
     }
 
     func testTokens_NOTOnly() {
@@ -291,13 +291,13 @@ class TokenizerTests: XCTestCase {
     func testTokens_NOTWithWhitespace() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "   \t NOT  ").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.not])
+        XCTAssertEqual(tokens, [UnaryOperator.not])
     }
 
     func testTokens_NOTBeforeWord() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "NOT me").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.not, Word("me")])
+        XCTAssertEqual(tokens, [UnaryOperator.not, Word("me")])
     }
 
     func testTokens_WordStartingWithNOT() {
@@ -309,7 +309,7 @@ class TokenizerTests: XCTestCase {
     func testTokens_NOTBetweenWords() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "this is NOT me").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Word("this"), Word("is"), Operator.not, Word("me")])
+        XCTAssertEqual(tokens, [Word("this"), Word("is"), UnaryOperator.not, Word("me")])
     }
 
     func testTokens_MixedCaseNotBeforeWord() {
@@ -349,13 +349,13 @@ class TokenizerTests: XCTestCase {
     func testTokens_ANDWithWhitespace() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "   \t AND  ").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.and])
+        XCTAssertEqual(tokens, [BinaryOperator.and])
     }
 
     func testTokens_ANDBeforeWord() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "AND you").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.and, Word("you")])
+        XCTAssertEqual(tokens, [BinaryOperator.and, Word("you")])
     }
 
     func testTokens_WordStartingWithAND() {
@@ -367,7 +367,7 @@ class TokenizerTests: XCTestCase {
     func testTokens_ANDBetweenWords() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "you AND me").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Word("you"), Operator.and, Word("me")])
+        XCTAssertEqual(tokens, [Word("you"), BinaryOperator.and, Word("me")])
     }
 
     func testTokens_MixedCaseAndBeforeWord() {
@@ -407,13 +407,13 @@ class TokenizerTests: XCTestCase {
     func testTokens_ORWithWhitespace() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "   \t OR  ").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.or])
+        XCTAssertEqual(tokens, [BinaryOperator.or])
     }
 
     func testTokens_ORBeforeWord() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "OR you").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.or, Word("you")])
+        XCTAssertEqual(tokens, [BinaryOperator.or, Word("you")])
     }
 
     func testTokens_WordStartingWithOR() {
@@ -425,7 +425,7 @@ class TokenizerTests: XCTestCase {
     func testTokens_ORBetweenWords() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "you OR me").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Word("you"), Operator.or, Word("me")])
+        XCTAssertEqual(tokens, [Word("you"), BinaryOperator.or, Word("me")])
     }
 
     func testTokens_MixedCaseOrBeforeWord() {
@@ -447,7 +447,7 @@ class TokenizerTests: XCTestCase {
     func testTokens_TermWithEverythingInIt() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "so this AND !that (or OR NOT so) is called \"  another \\\" hope\\\"   \" where you come from!").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Word("so"), Word("this"), Operator.and, Operator.bang, Word("that"), OpeningParens(), Word("or"), Operator.or, Operator.not, Word("so"), ClosingParens(), Word("is"), Word("called"), Phrase("  another \" hope\"   "), Word("where"), Word("you"), Word("come"), Word("from!")])
+        XCTAssertEqual(tokens, [Word("so"), Word("this"), BinaryOperator.and, UnaryOperator.bang, Word("that"), OpeningParens(), Word("or"), BinaryOperator.or, UnaryOperator.not, Word("so"), ClosingParens(), Word("is"), Word("called"), Phrase("  another \" hope\"   "), Word("where"), Word("you"), Word("come"), Word("from!")])
 
     }
 }

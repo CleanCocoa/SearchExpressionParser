@@ -80,7 +80,8 @@ internal struct TokenizerError: Error {
     enum Kind {
         case cannotExtractOpeningParens
         case cannotExtractQuotationMark
-        case cannotExtractOperator(Operator)
+        case cannotExtractUnaryOperator(UnaryOperator)
+        case cannotExtractBinaryOperator(BinaryOperator)
     }
 
     let kind: Kind

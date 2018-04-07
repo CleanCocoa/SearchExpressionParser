@@ -16,12 +16,12 @@ internal struct NotExtractor: TokenExtractor {
             && buffer.peekNext(3)?.isWhitespace == true
             else {
                 return .error(TokenizerError(
-                    kind: .cannotExtractOperator(.not),
+                    kind: .cannotExtractUnaryOperator(.not),
                     range: buffer.currentIndex ..< buffer.currentIndex + 3))
         }
 
         buffer.consume(3)
 
-        return .value(Operator.not)
+        return .value(UnaryOperator.not)
     }
 }

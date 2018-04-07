@@ -16,12 +16,12 @@ internal struct AndExtractor: TokenExtractor {
             && buffer.peekNext(3)?.isWhitespace == true
             else {
                 return .error(TokenizerError(
-                    kind: .cannotExtractOperator(.not),
+                    kind: .cannotExtractBinaryOperator(.and),
                     range: buffer.currentIndex ..< buffer.currentIndex + 3))
         }
 
         buffer.consume(3)
 
-        return .value(Operator.and)
+        return .value(BinaryOperator.and)
     }
 }

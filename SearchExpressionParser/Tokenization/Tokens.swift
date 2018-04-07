@@ -21,17 +21,25 @@ public struct ClosingParens: Token {
     public let string = ")"
 }
 
-public enum Operator: Token {
+public enum BinaryOperator: Token {
     case and
-    case bang
     case or
-    case not
 
     public var string: String {
         switch self {
         case .and: return "AND"
-        case .bang: return "!"
         case .or: return "OR"
+        }
+    }
+}
+
+public enum UnaryOperator: Token {
+    case bang
+    case not
+
+    public var string: String {
+        switch self {
+        case .bang: return "!"
         case .not: return "NOT"
         }
     }
