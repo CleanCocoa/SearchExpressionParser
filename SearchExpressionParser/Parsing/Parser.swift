@@ -2,6 +2,8 @@
 
 public struct Parser {
 
+    internal typealias Result = Either<Expression, ParseError>
+
     public let tokens: [Token]
 
     public init(tokens: [Token]) {
@@ -12,12 +14,30 @@ public struct Parser {
 
         let tokenBuffer = TokenBuffer(tokens: tokens)
 
-        guard let first = tokenBuffer.popToken() else { return AnythingNode() }
+        guard let next = parseExpression(tokenBuffer: tokenBuffer) else { return AnythingNode() }
 
-        if let next = tokenBuffer.popToken() {
-            return AndNode(ContainsNode(token: first), ContainsNode(token: next))
+        switch next {
+        case .error(let error):
+            throw error
+        case .value(let expression):
+            return expression
         }
-
-        return ContainsNode(token: first)
     }
+
+    private func parseExpression(tokenBuffer: TokenBuffer) -> Result? {
+
+        guard let current = tokenBuffer.popToken() else { return nil }
+        guard let next = parseExpression(tokenBuffer: tokenBuffer) else { return .value(ContainsNode(token: current)) }
+
+        switch next {
+        case .error(_):
+            return next
+        case .value(let nextExpression):
+            return .value(AndNode(ContainsNode(token: current), nextExpression))
+        }
+    }
+}
+
+internal enum ParseError: Error {
+    case expectedTokenAtExpressionStart
 }
