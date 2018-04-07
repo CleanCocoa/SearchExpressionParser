@@ -4,7 +4,9 @@ public protocol Token {
     var string: String { get }
 }
 
-public struct Word: Token {
+public typealias Word = Phrase
+
+public struct Phrase: Token {
     public let string: String
     public init(_ string: String) {
         self.string = string
@@ -17,10 +19,6 @@ public struct OpeningParens: Token {
 
 public struct ClosingParens: Token {
     public let string = ")"
-}
-
-public struct QuotationMark: Token {
-    public let string = "\""
 }
 
 public enum Operator: Token {

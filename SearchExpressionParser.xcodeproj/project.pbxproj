@@ -20,7 +20,7 @@
 		5048DF922078A61800BAA4B0 /* WordExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF912078A61800BAA4B0 /* WordExtractor.swift */; };
 		5048DF942078A93A00BAA4B0 /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF932078A93A00BAA4B0 /* Tokens.swift */; };
 		5048DF962078AB2A00BAA4B0 /* ParensExtractors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF952078AB2A00BAA4B0 /* ParensExtractors.swift */; };
-		5048DF982078B1D700BAA4B0 /* QuotationMarkExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF972078B1D700BAA4B0 /* QuotationMarkExtractor.swift */; };
+		5048DF982078B1D700BAA4B0 /* PhraseExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF972078B1D700BAA4B0 /* PhraseExtractor.swift */; };
 		5048DF9C2078B6F600BAA4B0 /* BangExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF9B2078B6F600BAA4B0 /* BangExtractor.swift */; };
 		5048DF9E2078BC3C00BAA4B0 /* NotExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF9D2078BC3C00BAA4B0 /* NotExtractor.swift */; };
 		5048DFA02078BF3600BAA4B0 /* AndExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF9F2078BF3600BAA4B0 /* AndExtractor.swift */; };
@@ -54,7 +54,7 @@
 		5048DF912078A61800BAA4B0 /* WordExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordExtractor.swift; sourceTree = "<group>"; };
 		5048DF932078A93A00BAA4B0 /* Tokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
 		5048DF952078AB2A00BAA4B0 /* ParensExtractors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParensExtractors.swift; sourceTree = "<group>"; };
-		5048DF972078B1D700BAA4B0 /* QuotationMarkExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotationMarkExtractor.swift; sourceTree = "<group>"; };
+		5048DF972078B1D700BAA4B0 /* PhraseExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhraseExtractor.swift; sourceTree = "<group>"; };
 		5048DF9B2078B6F600BAA4B0 /* BangExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BangExtractor.swift; sourceTree = "<group>"; };
 		5048DF9D2078BC3C00BAA4B0 /* NotExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotExtractor.swift; sourceTree = "<group>"; };
 		5048DF9F2078BF3600BAA4B0 /* AndExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndExtractor.swift; sourceTree = "<group>"; };
@@ -138,7 +138,7 @@
 				5048DF8120789DE400BAA4B0 /* TokenExtractor.swift */,
 				5048DFA32078C02C00BAA4B0 /* Operators */,
 				5048DF952078AB2A00BAA4B0 /* ParensExtractors.swift */,
-				5048DF972078B1D700BAA4B0 /* QuotationMarkExtractor.swift */,
+				5048DF972078B1D700BAA4B0 /* PhraseExtractor.swift */,
 				5048DF912078A61800BAA4B0 /* WordExtractor.swift */,
 			);
 			path = TokenExtractor;
@@ -266,7 +266,7 @@
 			files = (
 				5048DF8420789E1C00BAA4B0 /* Either.swift in Sources */,
 				5048DF7B2078990100BAA4B0 /* Tokenizer.swift in Sources */,
-				5048DF982078B1D700BAA4B0 /* QuotationMarkExtractor.swift in Sources */,
+				5048DF982078B1D700BAA4B0 /* PhraseExtractor.swift in Sources */,
 				5048DF8220789DE400BAA4B0 /* TokenExtractor.swift in Sources */,
 				5048DF7D20789B5000BAA4B0 /* TokenCharacterBuffer.swift in Sources */,
 				5048DF9E2078BC3C00BAA4B0 /* NotExtractor.swift in Sources */,

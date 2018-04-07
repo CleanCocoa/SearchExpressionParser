@@ -7,7 +7,7 @@ public struct Tokenizer {
         return [
             OpeningParensExtractor(),
             ClosingParensExtractor(),
-            QuotationMarkExtractor(),
+            PhraseExtractor(),
 
             BangExtractor(),
             NotExtractor(),

@@ -72,7 +72,6 @@ class TokenizerTests: XCTestCase {
     }
 
 
-
     // MARK: Simple words
 
     func testTokens_1Character() {
@@ -196,7 +195,7 @@ class TokenizerTests: XCTestCase {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\"").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [QuotationMark()])
+        XCTAssertEqual(tokens, [Word("\"")])
     }
 
     func testTokens_EscapedQuotation() {
@@ -210,24 +209,32 @@ class TokenizerTests: XCTestCase {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "   \"   ").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [QuotationMark()])
+        XCTAssertEqual(tokens, [Phrase("   ")])
     }
 
     func testTokens_QuotedWord() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\"justice\"").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [QuotationMark(), Word("justice"), QuotationMark()])
+        XCTAssertEqual(tokens, [Phrase("justice")])
     }
 
     func testTokens_QuotedPhrase() {
 
-        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\"fair play\"").tokens()) else { return }
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\"  fair   play \"").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [QuotationMark(), Word("fair"), Word("play"), QuotationMark()])
+        XCTAssertEqual(tokens, [Phrase("  fair   play ")])
     }
 
-    // MARK: Bang/NOT operator
+    func testTokens_QuotedPhraseWithEscapedQuotationMarks() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\"foo   \\\"  bar\"").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Phrase("foo   \"  bar")])
+    }
+
+
+    // MARK: - Bang/NOT operator
 
     func testTokens_BangOnly() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "!").tokens()) else { return }
