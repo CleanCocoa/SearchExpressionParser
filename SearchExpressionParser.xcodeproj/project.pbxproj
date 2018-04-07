@@ -21,6 +21,7 @@
 		5048DF942078A93A00BAA4B0 /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF932078A93A00BAA4B0 /* Tokens.swift */; };
 		5048DF962078AB2A00BAA4B0 /* ParensExtractors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF952078AB2A00BAA4B0 /* ParensExtractors.swift */; };
 		5048DF982078B1D700BAA4B0 /* QuotationMarkExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF972078B1D700BAA4B0 /* QuotationMarkExtractor.swift */; };
+		5048DF9A2078B50E00BAA4B0 /* EscapingExtrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF992078B50E00BAA4B0 /* EscapingExtrator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		5048DF932078A93A00BAA4B0 /* Tokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
 		5048DF952078AB2A00BAA4B0 /* ParensExtractors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParensExtractors.swift; sourceTree = "<group>"; };
 		5048DF972078B1D700BAA4B0 /* QuotationMarkExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotationMarkExtractor.swift; sourceTree = "<group>"; };
+		5048DF992078B50E00BAA4B0 /* EscapingExtrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EscapingExtrator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,9 +130,10 @@
 			isa = PBXGroup;
 			children = (
 				5048DF8120789DE400BAA4B0 /* TokenExtractor.swift */,
-				5048DF912078A61800BAA4B0 /* WordExtractor.swift */,
+				5048DF992078B50E00BAA4B0 /* EscapingExtrator.swift */,
 				5048DF952078AB2A00BAA4B0 /* ParensExtractors.swift */,
 				5048DF972078B1D700BAA4B0 /* QuotationMarkExtractor.swift */,
+				5048DF912078A61800BAA4B0 /* WordExtractor.swift */,
 			);
 			path = TokenExtractor;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 				5048DF7B2078990100BAA4B0 /* Tokenizer.swift in Sources */,
 				5048DF982078B1D700BAA4B0 /* QuotationMarkExtractor.swift in Sources */,
 				5048DF8220789DE400BAA4B0 /* TokenExtractor.swift in Sources */,
+				5048DF9A2078B50E00BAA4B0 /* EscapingExtrator.swift in Sources */,
 				5048DF7D20789B5000BAA4B0 /* TokenCharacterBuffer.swift in Sources */,
 				5048DF962078AB2A00BAA4B0 /* ParensExtractors.swift in Sources */,
 				5048DF922078A61800BAA4B0 /* WordExtractor.swift in Sources */,

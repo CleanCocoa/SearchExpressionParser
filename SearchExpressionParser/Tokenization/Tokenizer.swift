@@ -5,6 +5,7 @@ public struct Tokenizer {
 
     internal static var defaultExtractors: [TokenExtractor] {
         return [
+            EscapingExtractor(),
             OpeningParensExtractor(),
             ClosingParensExtractor(),
             QuotationMarkExtractor(),
@@ -74,6 +75,7 @@ internal struct TokenizerError: Error {
     enum Kind {
         case cannotExtractOpeningParens
         case cannotExtractQuotationMark
+        case cannotExtractEscapingCharacter
     }
 
     let kind: Kind

@@ -34,6 +34,19 @@ class TokenizerTests: XCTestCase {
         XCTAssert(tokens.isEmpty)
     }
 
+    func testTokens_EscapeCharacter() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Escaping()])
+    }
+
+    func testTokens_EscapedEscapeCharacter() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\\\").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Escaping(), Escaping()])
+    }
 
     // MARK: Simple words
 
@@ -90,6 +103,13 @@ class TokenizerTests: XCTestCase {
         XCTAssertEqual(tokens, [OpeningParens()])
     }
 
+    func testTokens_EscapedOpeningParens() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\(").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Escaping(), OpeningParens()])
+    }
+
     func testTokens_5OpeningParens() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "(((((").tokens()) else { return }
@@ -109,6 +129,13 @@ class TokenizerTests: XCTestCase {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: " \t  )   ").tokens()) else { return }
 
         XCTAssertEqual(tokens, [ClosingParens()])
+    }
+
+    func testTokens_EscapedClosingParens() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\)").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Escaping(), ClosingParens()])
     }
 
     func testTokens_4ClosingParens() {
@@ -145,6 +172,13 @@ class TokenizerTests: XCTestCase {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\"").tokens()) else { return }
 
         XCTAssertEqual(tokens, [QuotationMark()])
+    }
+
+    func testTokens_EscapedQuotation() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\\"").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Escaping(), QuotationMark()])
     }
 
     func testTokens_QuotationWithWhitespae() {

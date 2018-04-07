@@ -11,6 +11,10 @@ public struct Word: Token {
     }
 }
 
+public struct Escaping: Token {
+    public let string = "\\"
+}
+
 public struct OpeningParens: Token {
     public let string = "("
 }

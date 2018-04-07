@@ -23,7 +23,14 @@ internal struct WordExtractor: TokenExtractor {
 
 fileprivate extension Character {
     var isWordConsumable: Bool {
-        return !isWhitespace && !isParens && !isQuotationMark
+        return !isWhitespace
+            && !isParens
+            && !isQuotationMark
+            && !isEscapeChar
+    }
+
+    var isEscapeChar: Bool {
+        return self == "\\"
     }
 
     var isParens: Bool {
