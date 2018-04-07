@@ -26,3 +26,13 @@ public struct ClosingParens: Token {
 public struct QuotationMark: Token {
     public let string = "\""
 }
+
+public enum Operator: Token {
+    case bang
+
+    public var string: String {
+        switch self {
+        case .bang: return "!"
+        }
+    }
+}

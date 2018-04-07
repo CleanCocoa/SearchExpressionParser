@@ -6,9 +6,13 @@ public struct Tokenizer {
     internal static var defaultExtractors: [TokenExtractor] {
         return [
             EscapingExtractor(),
+
             OpeningParensExtractor(),
             ClosingParensExtractor(),
             QuotationMarkExtractor(),
+
+            BangExtractor(),
+
             WordExtractor() // Wildcard extractor comes last
         ]
     }
@@ -76,6 +80,7 @@ internal struct TokenizerError: Error {
         case cannotExtractOpeningParens
         case cannotExtractQuotationMark
         case cannotExtractEscapingCharacter
+        case cannotExtractOperator(Operator)
     }
 
     let kind: Kind

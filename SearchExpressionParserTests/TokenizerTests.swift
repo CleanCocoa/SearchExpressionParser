@@ -201,4 +201,52 @@ class TokenizerTests: XCTestCase {
 
         XCTAssertEqual(tokens, [QuotationMark(), Word("fair"), Word("play"), QuotationMark()])
     }
+
+    // MARK: Bang operator
+
+    func testTokens_BangOnly() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "!").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("!")])
+    }
+
+    func testTokens_BangWithWhitespace() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "    !  ").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("!")])
+    }
+
+    func testTokens_WordWithExclamationMark() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "this!").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("this!")])
+    }
+
+    func testTokens_BangedWord_OMGIsThisWhatNativeSpeakersWouldSay() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "!word").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Operator.bang, Word("word")])
+    }
+
+    func testTokens_BangedWordWithWhitespace_ThisDoesntFeelRight() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "! word").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("!"), Word("word")])
+    }
+
+    func testTokens_BangedBang_HopefullySomeoneWillCreateAPullRequestToCorrectMe() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "!!").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Operator.bang, Word("!")])
+    }
+
+    func testTokens_5BangsBeforeWord_ThisKindaLookedBetterBeforeIAddedTheOthers() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "!!!!!foo").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Operator.bang, Operator.bang, Operator.bang, Operator.bang, Operator.bang, Word("foo")])
+    }
 }
