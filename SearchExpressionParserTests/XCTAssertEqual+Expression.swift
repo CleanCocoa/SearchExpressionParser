@@ -24,22 +24,19 @@ func ==(lhs: Expression, rhs: Expression) -> Bool {
         return lOr.lhs == rOr.lhs
             && lOr.rhs == rOr.rhs
 
+    case let (lNot as NotNode,
+              rNot as NotNode):
+        return lNot.expression == rNot.expression
+
     default:
         return false
     }
 }
 
-func XCTAssertEqual<E2>(
+func XCTAssertEqual(
     _ lhs: Expression,
-    _ rhs: E2,
-    file: StaticString = #file, line: UInt = #line)
-    where E2: Expression
-{
+    _ rhs: Expression,
+    file: StaticString = #file, line: UInt = #line) {
 
-    guard let realLHS = lhs as? E2 else {
-        XCTFail("Expected \(type(of: rhs)), got \(type(of: lhs))", file: file, line: line)
-        return
-    }
-
-    XCTAssert(realLHS == rhs, "\(lhs) does not equal \(rhs)", file: file, line: line)
+    XCTAssert(lhs == rhs, "\(lhs) does not equal \(rhs)", file: file, line: line)
 }

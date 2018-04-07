@@ -17,6 +17,14 @@ public struct ContainsNode: Expression {
     }
 }
 
+public struct NotNode: Expression {
+    public let expression: Expression
+
+    public init(_ expression: Expression) {
+        self.expression = expression
+    }
+}
+
 public struct AndNode: Expression {
     public let lhs: Expression
     public let rhs: Expression

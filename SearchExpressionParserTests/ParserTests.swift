@@ -117,7 +117,7 @@ class ParserTests: XCTestCase {
                     ContainsNode("baz"))))
     }
 
-    
+
     // MARK: OR Operator
 
     func testExpression_OR() {
@@ -186,5 +186,72 @@ class ParserTests: XCTestCase {
                 OrNode(
                     ContainsNode("bar"),
                     ContainsNode("baz"))))
+    }
+
+
+    // MARK: Bang operator
+
+    func testExpression_Bang() {
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: [UnaryOperator.bang]).expression()) else { return }
+
+        XCTAssertEqual(expression, ContainsNode("!"))
+    }
+
+    func testExpression_PhraseBeforeBang() {
+        let tokens: [Token] = [Phrase("foo"), UnaryOperator.bang]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                ContainsNode("foo"),
+                ContainsNode("!")))
+    }
+
+    func testExpression_BangBeforePhrase() {
+        let tokens: [Token] = [UnaryOperator.bang, Phrase("foo")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            NotNode(ContainsNode("foo")))
+    }
+
+    func testExpression_2PhrasesWithBangBeforeFirst() {
+        let tokens: [Token] = [
+            UnaryOperator.bang, Phrase("foo"), Phrase("bar")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                NotNode(ContainsNode("foo")),
+                ContainsNode("bar")))
+    }
+
+    func testExpression_2PhrasesWithBangBeforeLast() {
+        let tokens: [Token] = [
+            Phrase("foo"), UnaryOperator.bang, Phrase("bar")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                ContainsNode("foo"),
+                NotNode(ContainsNode("bar"))))
+    }
+
+    func testExpression_BangDoesNotAffectUnparenthesizedSequence() {
+        let tokens: [Token] = [
+            UnaryOperator.bang, Phrase("a"), BinaryOperator.or, Phrase("b"), Phrase("c")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            OrNode(
+                NotNode(ContainsNode("a")),
+                AndNode(
+                    ContainsNode("b"),
+                    ContainsNode("c"))))
     }
 }

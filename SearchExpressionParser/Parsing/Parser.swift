@@ -28,7 +28,36 @@ public struct Parser {
         case .none:
             return AnythingNode()
 
-        default:
+        case .some(UnaryOperator.bang):
+            return try parseNegation(tokenBuffer)
+
+        case .some(_):
+            return try parseContainsNode(tokenBuffer)
+        }
+    }
+
+    private func parseNegation(_ tokenBuffer: TokenBuffer) throws -> Expression {
+
+        guard let operatorToken = tokenBuffer.popToken() as? UnaryOperator else {
+            throw ParseError.expectedUnaryOperatorInNegation
+        }
+
+        guard tokenBuffer.isNotAtEnd else { return ContainsNode(token: operatorToken) }
+        let expression = try parseNegatableTerm(tokenBuffer)
+        return NotNode(expression)
+    }
+
+    private func parseNegatableTerm(_ tokenBuffer: TokenBuffer) throws -> Expression {
+
+        guard let negatableToken = tokenBuffer.peekToken() else {
+            throw ParseError.expectedTermAfterNegation
+        }
+
+        switch negatableToken {
+        case UnaryOperator.bang:
+            return try parseNegation(tokenBuffer)
+
+        case _:
             return try parseContainsNode(tokenBuffer)
         }
     }
@@ -66,4 +95,6 @@ public struct Parser {
 
 internal enum ParseError: Error {
     case expectedTokenAtExpressionStart
+    case expectedUnaryOperatorInNegation
+    case expectedTermAfterNegation
 }
