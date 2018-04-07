@@ -18,6 +18,6 @@ internal struct BangExtractor: TokenExtractor {
 
         buffer.consume(1)
 
-        return .value(Operator.not)
+        return .value(Operator.bang)
     }
 }

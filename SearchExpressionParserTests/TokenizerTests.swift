@@ -226,7 +226,7 @@ class TokenizerTests: XCTestCase {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "!word").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.not, Word("word")])
+        XCTAssertEqual(tokens, [Operator.bang, Word("word")])
     }
 
     func testTokens_BangedWordWithWhitespace_ThisDoesntFeelRight() {
@@ -240,14 +240,14 @@ class TokenizerTests: XCTestCase {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "!!").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.not, Word("!")])
+        XCTAssertEqual(tokens, [Operator.bang, Word("!")])
     }
 
     func testTokens_5BangsBeforeWord_ThisKindaLookedBetterBeforeIAddedTheOthers() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "!!!!!foo").tokens()) else { return }
 
-        XCTAssertEqual(tokens, [Operator.not, Operator.not, Operator.not, Operator.not, Operator.not, Word("foo")])
+        XCTAssertEqual(tokens, [Operator.bang, Operator.bang, Operator.bang, Operator.bang, Operator.bang, Word("foo")])
     }
 
     func testTokens_NOTOnly() {
