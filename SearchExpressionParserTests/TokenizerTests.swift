@@ -4,15 +4,7 @@ import XCTest
 @testable import SearchExpressionParser
 
 class TokenizerTests: XCTestCase {
-    
-    override func setUp() {
-        super.setUp()
-    }
-    
-    override func tearDown() {
-        super.tearDown()
-    }
-    
+
     func testTokens_EmptyString_ReturnsEmptyTokenList() {
 
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "").tokens()) else { return }
@@ -362,4 +354,51 @@ class TokenizerTests: XCTestCase {
             XCTAssertNoThrows(try Tokenizer(searchString: "aND me").tokens()),
             [Word("aND"), Word("me")])
     }
+
+
+    // MARK: OR Operator
+
+    func testTokens_OROnly() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "OR").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("OR")])
+    }
+
+    func testTokens_ORWithWhitespace() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "   \t OR  ").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Operator.or])
+    }
+
+    func testTokens_ORBeforeWord() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "OR you").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Operator.or, Word("you")])
+    }
+
+    func testTokens_WordStartingWithOR() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "ORwell").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("ORwell")])
+    }
+
+    func testTokens_ORBetweenWords() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "you OR me").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("you"), Operator.or, Word("me")])
+    }
+
+    func testTokens_MixedCaseOrBeforeWord() {
+
+        XCTAssertEqual(
+            XCTAssertNoThrows(try Tokenizer(searchString: "or me").tokens()),
+            [Word("or"), Word("me")])
+        XCTAssertEqual(
+            XCTAssertNoThrows(try Tokenizer(searchString: "Or me").tokens()),
+            [Word("Or"), Word("me")])
+        XCTAssertEqual(
+            XCTAssertNoThrows(try Tokenizer(searchString: "oR me").tokens()),
+            [Word("oR"), Word("me")])
+    }
+
 }

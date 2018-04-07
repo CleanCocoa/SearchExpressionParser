@@ -14,6 +14,7 @@ public struct Tokenizer {
             BangExtractor(),
             NotExtractor(),
             AndExtractor(),
+            OrExtractor(),
 
             WordExtractor() // Wildcard extractor comes last
         ]

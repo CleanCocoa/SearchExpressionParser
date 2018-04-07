@@ -25,6 +25,7 @@
 		5048DF9C2078B6F600BAA4B0 /* BangExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF9B2078B6F600BAA4B0 /* BangExtractor.swift */; };
 		5048DF9E2078BC3C00BAA4B0 /* NotExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF9D2078BC3C00BAA4B0 /* NotExtractor.swift */; };
 		5048DFA02078BF3600BAA4B0 /* AndExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DF9F2078BF3600BAA4B0 /* AndExtractor.swift */; };
+		5048DFA22078C02400BAA4B0 /* OrExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFA12078C02400BAA4B0 /* OrExtractor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		5048DF9B2078B6F600BAA4B0 /* BangExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BangExtractor.swift; sourceTree = "<group>"; };
 		5048DF9D2078BC3C00BAA4B0 /* NotExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotExtractor.swift; sourceTree = "<group>"; };
 		5048DF9F2078BF3600BAA4B0 /* AndExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndExtractor.swift; sourceTree = "<group>"; };
+		5048DFA12078C02400BAA4B0 /* OrExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrExtractor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,15 +138,24 @@
 			isa = PBXGroup;
 			children = (
 				5048DF8120789DE400BAA4B0 /* TokenExtractor.swift */,
-				5048DF9F2078BF3600BAA4B0 /* AndExtractor.swift */,
-				5048DF9B2078B6F600BAA4B0 /* BangExtractor.swift */,
-				5048DF9D2078BC3C00BAA4B0 /* NotExtractor.swift */,
+				5048DFA32078C02C00BAA4B0 /* Operators */,
 				5048DF992078B50E00BAA4B0 /* EscapingExtrator.swift */,
 				5048DF952078AB2A00BAA4B0 /* ParensExtractors.swift */,
 				5048DF972078B1D700BAA4B0 /* QuotationMarkExtractor.swift */,
 				5048DF912078A61800BAA4B0 /* WordExtractor.swift */,
 			);
 			path = TokenExtractor;
+			sourceTree = "<group>";
+		};
+		5048DFA32078C02C00BAA4B0 /* Operators */ = {
+			isa = PBXGroup;
+			children = (
+				5048DF9F2078BF3600BAA4B0 /* AndExtractor.swift */,
+				5048DF9B2078B6F600BAA4B0 /* BangExtractor.swift */,
+				5048DF9D2078BC3C00BAA4B0 /* NotExtractor.swift */,
+				5048DFA12078C02400BAA4B0 /* OrExtractor.swift */,
+			);
+			name = Operators;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -267,6 +278,7 @@
 				5048DF922078A61800BAA4B0 /* WordExtractor.swift in Sources */,
 				5048DF9C2078B6F600BAA4B0 /* BangExtractor.swift in Sources */,
 				5048DFA02078BF3600BAA4B0 /* AndExtractor.swift in Sources */,
+				5048DFA22078C02400BAA4B0 /* OrExtractor.swift in Sources */,
 				5048DF8F2078A49600BAA4B0 /* Character+isWhitespace.swift in Sources */,
 				5048DF942078A93A00BAA4B0 /* Tokens.swift in Sources */,
 			);
