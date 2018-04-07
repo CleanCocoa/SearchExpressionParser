@@ -28,11 +28,13 @@ public struct QuotationMark: Token {
 }
 
 public enum Operator: Token {
-    case not
+    case and
     case bang
+    case not
 
     public var string: String {
         switch self {
+        case .and: return "AND"
         case .bang: return "!"
         case .not: return "NOT"
         }

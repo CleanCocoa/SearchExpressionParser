@@ -304,4 +304,62 @@ class TokenizerTests: XCTestCase {
             XCTAssertNoThrows(try Tokenizer(searchString: "nOT me").tokens()),
             [Word("nOT"), Word("me")])
     }
+
+
+    // MARK: AND Operator
+
+    func testTokens_ANDOnly() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "AND").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("AND")])
+    }
+
+    func testTokens_ANDWithWhitespace() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "   \t AND  ").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Operator.and])
+    }
+
+    func testTokens_ANDBeforeWord() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "AND you").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Operator.and, Word("you")])
+    }
+
+    func testTokens_WordStartingWithAND() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "ANDromeda").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("ANDromeda")])
+    }
+
+    func testTokens_ANDBetweenWords() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "you AND me").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("you"), Operator.and, Word("me")])
+    }
+
+    func testTokens_MixedCaseAndBeforeWord() {
+
+        XCTAssertEqual(
+            XCTAssertNoThrows(try Tokenizer(searchString: "and me").tokens()),
+            [Word("and"), Word("me")])
+        XCTAssertEqual(
+            XCTAssertNoThrows(try Tokenizer(searchString: "And me").tokens()),
+            [Word("And"), Word("me")])
+        XCTAssertEqual(
+            XCTAssertNoThrows(try Tokenizer(searchString: "aNd me").tokens()),
+            [Word("aNd"), Word("me")])
+        XCTAssertEqual(
+            XCTAssertNoThrows(try Tokenizer(searchString: "anD me").tokens()),
+            [Word("anD"), Word("me")])
+        XCTAssertEqual(
+            XCTAssertNoThrows(try Tokenizer(searchString: "ANd me").tokens()),
+            [Word("ANd"), Word("me")])
+        XCTAssertEqual(
+            XCTAssertNoThrows(try Tokenizer(searchString: "AnD me").tokens()),
+            [Word("AnD"), Word("me")])
+        XCTAssertEqual(
+            XCTAssertNoThrows(try Tokenizer(searchString: "aND me").tokens()),
+            [Word("aND"), Word("me")])
+    }
 }
