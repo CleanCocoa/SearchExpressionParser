@@ -441,4 +441,13 @@ class TokenizerTests: XCTestCase {
             [Word("oR"), Word("me")])
     }
 
+
+    // MARK: - Complex terms
+
+    func testTokens_TermWithEverythingInIt() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "so this AND !that (or OR NOT so) is called \"  another \\\" hope\\\"   \" where you come from!").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("so"), Word("this"), Operator.and, Operator.bang, Word("that"), OpeningParens(), Word("or"), Operator.or, Operator.not, Word("so"), ClosingParens(), Word("is"), Word("called"), Phrase("  another \" hope\"   "), Word("where"), Word("you"), Word("come"), Word("from!")])
+
+    }
 }
