@@ -44,24 +44,8 @@ public struct Parser {
         }
 
         guard tokenBuffer.isNotAtEnd else { return ContainsNode(token: operatorToken) }
-        let expression = try parseNegatableTerm(tokenBuffer)
+        let expression = try parsePrimary(tokenBuffer)
         return NotNode(expression)
-    }
-
-    private func parseNegatableTerm(_ tokenBuffer: TokenBuffer) throws -> Expression {
-
-        guard let negatableToken = tokenBuffer.peekToken() else {
-            throw ParseError.expectedTermAfterNegation
-        }
-
-        switch negatableToken {
-        case UnaryOperator.bang,
-             UnaryOperator.not:
-            return try parseNegation(tokenBuffer)
-
-        case _:
-            return try parseContainsNode(tokenBuffer)
-        }
     }
 
     private func parseContainsNode(_ tokenBuffer: TokenBuffer) throws -> Expression {
