@@ -31,6 +31,7 @@
 		5048DFAC2078D0F900BAA4B0 /* AnyEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFAB2078D0F900BAA4B0 /* AnyEquatable.swift */; };
 		5048DFAE2078D50500BAA4B0 /* TokenBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFAD2078D50500BAA4B0 /* TokenBuffer.swift */; };
 		5048DFB02078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFAF2078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift */; };
+		50976269207937820002881A /* BalanceParenthesesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50976268207937820002881A /* BalanceParenthesesTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		5048DFAB2078D0F900BAA4B0 /* AnyEquatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEquatable.swift; sourceTree = "<group>"; };
 		5048DFAD2078D50500BAA4B0 /* TokenBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBuffer.swift; sourceTree = "<group>"; };
 		5048DFAF2078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTAssertEqual+Expression.swift"; sourceTree = "<group>"; };
+		50976268207937820002881A /* BalanceParenthesesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceParenthesesTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 			children = (
 				5048DF6C2078985800BAA4B0 /* TokenizerTests.swift */,
 				5048DFA92078D00F00BAA4B0 /* ParserTests.swift */,
+				50976268207937820002881A /* BalanceParenthesesTests.swift */,
 				5048DF8520789FD300BAA4B0 /* TestHelpers.swift */,
 				5048DFAF2078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift */,
 				5048DF8C2078A3C600BAA4B0 /* XCTAssertEqual+Token.swift */,
@@ -313,6 +316,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50976269207937820002881A /* BalanceParenthesesTests.swift in Sources */,
 				5048DFAA2078D00F00BAA4B0 /* ParserTests.swift in Sources */,
 				5048DF6D2078985800BAA4B0 /* TokenizerTests.swift in Sources */,
 				5048DFB02078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift in Sources */,

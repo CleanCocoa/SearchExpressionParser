@@ -7,7 +7,7 @@ public struct Parser {
     public let tokens: [Token]
 
     public init(tokens: [Token]) {
-        self.tokens = tokens
+        self.tokens = balanceParentheses(tokens: tokens)
     }
 
     public func expression() throws -> Expression {
@@ -83,4 +83,51 @@ internal enum ParseError: Error {
     case expectedTokenAtExpressionStart
     case expectedUnaryOperatorInNegation
     case expectedTermAfterNegation
+}
+
+// MARK: - Clean up unbalanced parens
+
+internal func balanceParentheses(tokens: [Token]) -> [Token] {
+    switch balanceParentheses(tokens: tokens, start: 0) {
+    case .closeCurrent(at: _):
+        assertionFailure()
+        return tokens
+
+    case .end(tokens: let result):
+        return result
+    }
+}
+
+private enum Balance {
+    case closeCurrent(at: Int)
+    case end(tokens: [Token])
+}
+
+private func balanceParentheses(tokens: [Token], start: Int) -> Balance {
+
+    let isRootLevel = (start == 0)
+    var tokens = tokens
+    var head = start
+    while head < tokens.count {
+        let token = tokens[head]
+        if token is OpeningParens {
+            let innerBalance = balanceParentheses(tokens: tokens, start: head + 1)
+            switch innerBalance {
+            case .closeCurrent(at: let occupied): head = occupied
+            case .end(var replacement):
+                replacement[head] = Word(token.string)
+                tokens = replacement
+            }
+        } else if token is ClosingParens {
+            if isRootLevel {
+                // This is the root level, so it indicates this ")" had no opener.
+                tokens[head] = Word(token.string)
+            } else {
+                // This is not the root level, so it's closing an open parens somewhere
+                return .closeCurrent(at: head)
+            }
+        }
+        head += 1
+    }
+    return .end(tokens: tokens)
 }
