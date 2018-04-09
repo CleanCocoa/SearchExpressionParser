@@ -32,6 +32,7 @@
 		5048DFAE2078D50500BAA4B0 /* TokenBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFAD2078D50500BAA4B0 /* TokenBuffer.swift */; };
 		5048DFB02078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048DFAF2078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift */; };
 		50976269207937820002881A /* BalanceParenthesesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50976268207937820002881A /* BalanceParenthesesTests.swift */; };
+		5097626B207B44620002881A /* SearchExpressionParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097626A207B44620002881A /* SearchExpressionParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		5048DFAD2078D50500BAA4B0 /* TokenBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBuffer.swift; sourceTree = "<group>"; };
 		5048DFAF2078D57D00BAA4B0 /* XCTAssertEqual+Expression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTAssertEqual+Expression.swift"; sourceTree = "<group>"; };
 		50976268207937820002881A /* BalanceParenthesesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceParenthesesTests.swift; sourceTree = "<group>"; };
+		5097626A207B44620002881A /* SearchExpressionParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchExpressionParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				5048DF612078985800BAA4B0 /* SearchExpressionParser.h */,
+				5097626A207B44620002881A /* SearchExpressionParser.swift */,
 				5048DF8020789DC800BAA4B0 /* Tokenization */,
 				5048DFA42078CFA400BAA4B0 /* Parsing */,
 				5048DF8320789E1C00BAA4B0 /* Either.swift */,
@@ -295,6 +298,7 @@
 			files = (
 				5048DF8420789E1C00BAA4B0 /* Either.swift in Sources */,
 				5048DF7B2078990100BAA4B0 /* Tokenizer.swift in Sources */,
+				5097626B207B44620002881A /* SearchExpressionParser.swift in Sources */,
 				5048DF982078B1D700BAA4B0 /* PhraseExtractor.swift in Sources */,
 				5048DF8220789DE400BAA4B0 /* TokenExtractor.swift in Sources */,
 				5048DF7D20789B5000BAA4B0 /* TokenCharacterBuffer.swift in Sources */,
