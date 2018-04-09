@@ -347,4 +347,38 @@ class ParserTests: XCTestCase {
                 ContainsNode("b"))))
     }
 
+    func testExpression_ParensPairsWithImplicitAnd() {
+        let tokens: [Token] = [
+            OpeningParens(), Phrase("a"), BinaryOperator.or, Phrase("b"), ClosingParens(),
+            OpeningParens(), Phrase("c"), BinaryOperator.and, Phrase("d"), ClosingParens()]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                OrNode(
+                    ContainsNode("a"),
+                    ContainsNode("b")),
+                AndNode(
+                    ContainsNode("c"),
+                    ContainsNode("d"))))
+    }
+
+    func testExpression_EmptyParens() {
+        let tokens: [Token] = [
+            OpeningParens(), ClosingParens(),
+            OpeningParens(), OpeningParens(), ClosingParens(), ClosingParens()]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            AndNode(
+                AndNode(
+                    ContainsNode("("),
+                    ContainsNode(")")),
+                AndNode(
+                    ContainsNode("("),
+                    ContainsNode(")"))))
+    }
+
 }

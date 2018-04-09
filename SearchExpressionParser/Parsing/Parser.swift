@@ -94,11 +94,18 @@ public struct Parser {
 
     private func parseOpeningParens(_ tokenBuffer: TokenBuffer) throws -> Expression {
 
-        guard tokenBuffer.peekToken() is OpeningParens else {
+        guard let openingParensToken = tokenBuffer.peekToken() as? OpeningParens else {
             throw ParseError.expectedOpeningParens
         }
 
         tokenBuffer.consume()
+
+        if let closingParensToken = tokenBuffer.peekToken() as? ClosingParens {
+            tokenBuffer.consume()
+            return AndNode(
+                ContainsNode(openingParensToken.string),
+                ContainsNode(closingParensToken.string))
+        }
 
         return try parseExpression(tokenBuffer)
     }
