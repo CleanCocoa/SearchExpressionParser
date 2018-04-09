@@ -39,9 +39,11 @@ public struct Parser {
 
     private func parseNegation(_ tokenBuffer: TokenBuffer) throws -> Expression {
 
-        guard let operatorToken = tokenBuffer.popToken() as? UnaryOperator else {
+        guard let operatorToken = tokenBuffer.peekToken() as? UnaryOperator else {
             throw ParseError.expectedUnaryOperatorInNegation
         }
+
+        tokenBuffer.consume()
 
         guard tokenBuffer.isNotAtEnd else { return ContainsNode(token: operatorToken) }
         let expression = try parsePrimary(tokenBuffer)
@@ -50,9 +52,11 @@ public struct Parser {
 
     private func parseContainsNode(_ tokenBuffer: TokenBuffer) throws -> Expression {
 
-        guard let current = tokenBuffer.popToken() else {
+        guard let current = tokenBuffer.peekToken() else {
             throw ParseError.expectedTokenAtExpressionStart
         }
+        tokenBuffer.consume()
+
         return ContainsNode(token: current)
     }
 
@@ -61,13 +65,13 @@ public struct Parser {
 
         switch operatorToken {
         case BinaryOperator.and:
-            _ = tokenBuffer.popToken()
+            tokenBuffer.consume()
             guard tokenBuffer.isNotAtEnd else { return AndNode(lhs, ContainsNode(token: operatorToken)) }
             let rhs = try parseExpression(tokenBuffer)
             return AndNode(lhs, rhs)
 
         case BinaryOperator.or:
-            _ = tokenBuffer.popToken()
+            tokenBuffer.consume()
             guard tokenBuffer.isNotAtEnd else { return AndNode(lhs, ContainsNode(token: operatorToken)) }
             let rhs = try parseExpression(tokenBuffer)
             return OrNode(lhs, rhs)

@@ -23,10 +23,11 @@ internal final class TokenBuffer {
         return tokens[safe: currentIndex + delta]
     }
 
-    func popToken() -> Token? {
-        guard let token = peekToken() else { return nil }
-        currentIndex += 1
-        return token
+    func consume(_ delta: Int = 1) {
+        guard delta > 0 else {
+            fatalError("Cannot consume less than one character")
+        }
+        currentIndex += delta
     }
 }
 
