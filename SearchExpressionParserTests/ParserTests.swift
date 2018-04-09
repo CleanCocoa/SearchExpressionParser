@@ -334,4 +334,17 @@ class ParserTests: XCTestCase {
                     ContainsNode("c"))))
     }
 
+    func testExpression_NOTAffectsParenthesizedExpression() {
+        let tokens: [Token] = [
+            UnaryOperator.not,
+            OpeningParens(), Phrase("a"), BinaryOperator.or, Phrase("b"), ClosingParens()]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+
+        XCTAssertEqual(
+            expression,
+            NotNode(OrNode(
+                ContainsNode("a"),
+                ContainsNode("b"))))
+    }
+
 }

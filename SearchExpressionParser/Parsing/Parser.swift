@@ -19,6 +19,13 @@ public struct Parser {
     private func parseExpression(_ tokenBuffer: TokenBuffer) throws -> Expression {
 
         let node = try parsePrimary(tokenBuffer)
+
+        // Skip closing parens (which are guaranteed to be balanced with opening parens)
+        if tokenBuffer.peekToken() is ClosingParens {
+            tokenBuffer.consume()
+            return node
+        }
+
         return try parseBinaryOperator(tokenBuffer, lhs: node)
     }
 
@@ -31,6 +38,9 @@ public struct Parser {
         case .some(UnaryOperator.bang),
              .some(UnaryOperator.not):
             return try parseNegation(tokenBuffer)
+
+        case .some(is OpeningParens):
+            return try parseOpeningParens(tokenBuffer)
 
         case .some(_):
             return try parseContainsNode(tokenBuffer)
@@ -81,12 +91,24 @@ public struct Parser {
             return AndNode(lhs, rhs)
         }
     }
+
+    private func parseOpeningParens(_ tokenBuffer: TokenBuffer) throws -> Expression {
+
+        guard tokenBuffer.peekToken() is OpeningParens else {
+            throw ParseError.expectedOpeningParens
+        }
+
+        tokenBuffer.consume()
+
+        return try parseExpression(tokenBuffer)
+    }
 }
 
 internal enum ParseError: Error {
     case expectedTokenAtExpressionStart
     case expectedUnaryOperatorInNegation
     case expectedTermAfterNegation
+    case expectedOpeningParens
 }
 
 // MARK: - Clean up unbalanced parens
