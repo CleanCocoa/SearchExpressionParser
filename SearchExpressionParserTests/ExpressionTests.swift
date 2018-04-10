@@ -5,7 +5,7 @@ import XCTest
 
 class ExpressionTests: XCTestCase {
 
-    var irrelevant: ExpressionSatisfiable {
+    var irrelevant: StringExpressionSatisfiable {
         return "irrelevant"
     }
 
@@ -52,13 +52,21 @@ class ExpressionTests: XCTestCase {
 }
 
 struct FalsyNode: Expression {
-    func isSatisfied(by satisfiable: ExpressionSatisfiable) -> Bool {
+    func isSatisfied(by satisfiable: StringExpressionSatisfiable) -> Bool {
+        return false
+    }
+
+    func isSatisfied(by satisfiable: CStringExpressionSatisfiable) -> Bool {
         return false
     }
 }
 
 struct TruthyNode: Expression {
-    func isSatisfied(by satisfiable: ExpressionSatisfiable) -> Bool {
+    func isSatisfied(by satisfiable: StringExpressionSatisfiable) -> Bool {
+        return true
+    }
+
+    func isSatisfied(by satisfiable: CStringExpressionSatisfiable) -> Bool {
         return true
     }
 }
