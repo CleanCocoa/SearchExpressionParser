@@ -24,6 +24,7 @@ public protocol Expression {
 
 /// Wildcard that is satisfied by any string.
 public struct AnythingNode: Expression {
+
     public func isSatisfied(by satisfiable: StringExpressionSatisfiable) -> Bool {
         return true
     }
@@ -34,6 +35,7 @@ public struct AnythingNode: Expression {
 }
 
 public struct ContainsNode: Expression {
+
     public typealias CString = [CChar]
     public let string: String
     public let cString: CString
@@ -65,6 +67,7 @@ public struct ContainsNode: Expression {
 }
 
 public struct NotNode: Expression {
+
     public let expression: Expression
 
     public init(_ expression: Expression) {
