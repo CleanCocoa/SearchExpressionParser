@@ -275,11 +275,11 @@
 				TargetAttributes = {
 					5048DF5D2078985800BAA4B0 = {
 						CreatedOnToolsVersion = 9.3;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 					};
 					5048DF662078985800BAA4B0 = {
 						CreatedOnToolsVersion = 9.3;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -289,6 +289,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 5048DF542078985800BAA4B0;
 			productRefGroup = 5048DF5F2078985800BAA4B0 /* Products */;
@@ -517,7 +518,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -544,7 +545,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.christiantietze.SearchExpressionParser;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -563,7 +564,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.christiantietze.SearchExpressionParserTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -582,7 +583,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.christiantietze.SearchExpressionParserTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
