@@ -1,6 +1,6 @@
 # SearchExpressionParser
 
-![Swift 4.2](https://img.shields.io/badge/Swift-4.2-blue.svg?style=flat)
+![Swift 5.0](https://img.shields.io/badge/Swift-5.0-blue.svg?style=flat)
 ![Version](https://img.shields.io/github/tag/CleanCocoa/SearchExpressionParser.svg?style=flat)
 ![License](https://img.shields.io/github/license/CleanCocoa/SearchExpressionParser.svg?style=flat)
 ![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg?style=flat)
@@ -114,10 +114,12 @@ The expressions provided are:
 - `NotNode` wraps 1 other node and reverses the result of its outcome.
 - `AndNode` and `OrNode` both take 2 other notes and combine their results with the boolean operator equivalents.
 
-## License
-
-Copyright (c) 2018 Christian Tietze. Distributed under the MIT License.
-
 ## Apps that use this
 
 - [The Archive](https://zettelkasten.de/the-archive/), a fast plain-text note-taking app for macOS.
+
+Use this in your app? Open a PR and tell the world about it!
+
+## License
+
+Copyright (c) 2018-2019 Christian Tietze. Distributed under the MIT License.
