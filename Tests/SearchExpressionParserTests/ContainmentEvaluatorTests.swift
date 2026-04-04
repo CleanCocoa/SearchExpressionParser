@@ -7,7 +7,7 @@ class ContainmentEvaluatorTests: XCTestCase {
 
     // MARK: - Normalization
 
-    func normalForm(_ evaluable: ContainmentEvaluator.Evaluable) throws -> Expression {
+    func normalForm(_ evaluable: ContainmentEvaluator.Evaluable) throws -> SearchExpressionParser.Expression {
         return try ContainmentEvaluator(evaluable: evaluable).normalizedEvaluable()
     }
 

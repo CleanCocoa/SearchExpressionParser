@@ -51,7 +51,7 @@ class ExpressionTests: XCTestCase {
 
 }
 
-struct FalsyNode: Expression {
+struct FalsyNode: SearchExpressionParser.Expression {
     func isSatisfied(by satisfiable: StringExpressionSatisfiable) -> Bool {
         return false
     }
@@ -61,7 +61,7 @@ struct FalsyNode: Expression {
     }
 }
 
-struct TruthyNode: Expression {
+struct TruthyNode: SearchExpressionParser.Expression {
     func isSatisfied(by satisfiable: StringExpressionSatisfiable) -> Bool {
         return true
     }

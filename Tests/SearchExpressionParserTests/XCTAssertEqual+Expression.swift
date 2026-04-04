@@ -3,7 +3,7 @@
 import XCTest
 import SearchExpressionParser
 
-func ==(lhs: Expression, rhs: Expression) -> Bool {
+func ==(lhs: SearchExpressionParser.Expression, rhs: SearchExpressionParser.Expression) -> Bool {
 
     switch (lhs, rhs) {
     case (is AnythingNode,
@@ -34,8 +34,8 @@ func ==(lhs: Expression, rhs: Expression) -> Bool {
 }
 
 func XCTAssertEqual(
-    _ lhs: Expression,
-    _ rhs: Expression,
+    _ lhs: SearchExpressionParser.Expression,
+    _ rhs: SearchExpressionParser.Expression,
     file: StaticString = #file, line: UInt = #line) {
 
     XCTAssert(lhs == rhs, "\(lhs) does not equal \(rhs)", file: file, line: line)
