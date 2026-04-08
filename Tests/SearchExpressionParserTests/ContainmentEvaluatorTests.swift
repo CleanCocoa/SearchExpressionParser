@@ -11,6 +11,7 @@ class ContainmentEvaluatorTests: XCTestCase {
         return try ContainmentEvaluator(evaluable: evaluable).normalizedEvaluable()
     }
 
+    /// @spec negation-normal-form/non-not-nodes-returned-unchanged/leaf-nodes-pass-through
     func testNormalized_Anything() {
         guard let normalization = XCTAssertNoThrows(try normalForm(AnythingNode())) else { return }
         XCTAssertEqual(
@@ -18,6 +19,7 @@ class ContainmentEvaluatorTests: XCTestCase {
             AnythingNode())
     }
 
+    /// @spec negation-normal-form/non-not-nodes-returned-unchanged/leaf-nodes-pass-through
     func testNormalized_Contains() {
         guard let normalization = XCTAssertNoThrows(try normalForm(ContainsNode("something"))) else { return }
         XCTAssertEqual(
@@ -25,6 +27,7 @@ class ContainmentEvaluatorTests: XCTestCase {
             ContainsNode("something"))
     }
 
+    /// @spec negation-normal-form/not-over-leaf-nodes-preserved/not-wrapping-a-containsnode
     func testNormalized_Not_1LevelDeep_Contains() {
         let expression = NotNode(ContainsNode("x"))
         guard let normalization = XCTAssertNoThrows(try normalForm(expression)) else { return }
@@ -33,6 +36,7 @@ class ContainmentEvaluatorTests: XCTestCase {
             NotNode(ContainsNode("x")))
     }
 
+    /// @spec negation-normal-form/not-over-and-applies-de-morgans-law/not-wrapping-an-and-of-two-leaf-nodes
     func testNormalized_Not_1LevelDeep_And() {
         let expression = NotNode(AndNode(ContainsNode("x"), ContainsNode("y")))
         guard let normalization = XCTAssertNoThrows(try normalForm(expression)) else { return }
@@ -42,6 +46,7 @@ class ContainmentEvaluatorTests: XCTestCase {
                    NotNode(ContainsNode("y"))))
     }
 
+    /// @spec negation-normal-form/not-over-or-applies-de-morgans-law/not-wrapping-an-or-of-two-leaf-nodes
     func testNormalized_Not_1LevelDeep_Or() {
         let expression = NotNode(OrNode(ContainsNode("x"), ContainsNode("y")))
         guard let normalization = XCTAssertNoThrows(try normalForm(expression)) else { return }
@@ -51,6 +56,7 @@ class ContainmentEvaluatorTests: XCTestCase {
                     NotNode(ContainsNode("y"))))
     }
 
+    /// @spec negation-normal-form/multi-level-normalization-through-arbitrary-nesting/two-levels-of-nesting
     func testNormalized_Not_2LevelsDeep() {
         let expression = NotNode(AndNode(
             OrNode(ContainsNode("a"),
@@ -72,26 +78,34 @@ class ContainmentEvaluatorTests: XCTestCase {
         return ContainmentEvaluator(evaluable: evaluable).phrases()
     }
 
+    /// @spec phrase-extraction/anythingnode-contributes-no-phrases/wildcard-match
     func testPhrases_Anything() {
         XCTAssertEqual(phrases(AnythingNode()), [])
     }
 
+    /// @spec phrase-extraction/containsnode-contributes-its-string-as-a-phrase/single-contains-term
     func testPhrases_Contains() {
         XCTAssertEqual(phrases(ContainsNode("foo")), ["foo"])
         XCTAssertEqual(phrases(ContainsNode("bar")), ["bar"])
     }
 
+    /// @spec phrase-extraction/notnode-contributes-no-phrases/negated-term
     func testPhrases_Not() {
         XCTAssertEqual(phrases(NotNode(ContainsNode("foo"))), [])
         XCTAssertEqual(phrases(NotNode(ContainsNode("bar"))), [])
     }
 
+    /// @spec negation-normal-form/phrases-extraction-excludes-negated-terms/and-with-one-negated-operand
+    /// @spec phrase-extraction/andnode-concatenates-phrases-from-both-children/two-positive-terms
+    /// @spec phrase-extraction/andnode-concatenates-phrases-from-both-children/one-negated-child
     func testPhrases_And() {
         XCTAssertEqual(phrases(AndNode(ContainsNode("foo"), ContainsNode("bar"))), ["foo", "bar"])
         XCTAssertEqual(phrases(AndNode(NotNode(ContainsNode("foo")), ContainsNode("bar"))), ["bar"])
         XCTAssertEqual(phrases(AndNode(ContainsNode("foo"), NotNode(ContainsNode("bar")))), ["foo"])
     }
 
+    /// @spec phrase-extraction/ornode-concatenates-phrases-from-both-children/two-alternative-terms
+    /// @spec phrase-extraction/ornode-concatenates-phrases-from-both-children/one-negated-alternative
     func testPhrases_Or() {
         XCTAssertEqual(phrases(OrNode(ContainsNode("foo"), ContainsNode("bar"))), ["foo", "bar"])
         XCTAssertEqual(phrases(OrNode(NotNode(ContainsNode("foo")), ContainsNode("bar"))), ["bar"])

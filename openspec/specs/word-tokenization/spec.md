@@ -123,7 +123,7 @@ The system SHALL interpret `\` as an escape character within words. When `\` is 
 
 The system SHALL try WordExtractor last in the extractor pipeline, after OpeningParensExtractor, ClosingParensExtractor, PhraseExtractor, BangExtractor, NotExtractor, AndExtractor, and OrExtractor. WordExtractor serves as the wildcard fallback.
 
-#### Scenario: Extractor ordering
+#### Scenario: Extractor ordering <!-- @nocover: structural property, not runtime behavior -->
 
 - **GIVEN** the default tokenizer configuration
 - **WHEN** the extractor list is initialized
@@ -133,7 +133,7 @@ The system SHALL try WordExtractor last in the extractor pipeline, after Opening
 
 The system SHALL define `Word` as a public typealias for `Phrase`. Both names refer to the same struct type, which conforms to `Token` and holds a single `string` property.
 
-#### Scenario: Type equivalence
+#### Scenario: Type equivalence <!-- @nocover: compile-time typealias, not runtime behavior -->
 
 - **GIVEN** a `Word("hello")` and a `Phrase("hello")`
 - **WHEN** compared
@@ -143,7 +143,7 @@ The system SHALL define `Word` as a public typealias for `Phrase`. Both names re
 
 WordExtractor SHALL only attempt extraction when the next character in the buffer is not whitespace. The `matchesPreconditions` method returns `true` when the next character is non-whitespace, and `false` otherwise.
 
-#### Scenario: Whitespace at current position
+#### Scenario: Whitespace at current position <!-- @nocover: internal precondition, not public API behavior -->
 
 - **GIVEN** a buffer positioned at a whitespace character
 - **WHEN** `matchesPreconditions` is checked
