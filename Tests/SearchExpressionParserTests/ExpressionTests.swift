@@ -67,6 +67,19 @@ class ExpressionTests: XCTestCase {
         XCTAssert(     NotNode(FalsyNode() ).isSatisfied(by: irrelevant))
     }
 
+    /// @spec expression-evaluation/dual-evaluation-paths/string-conformance-on-swift-string
+    func testSatisfy_StringConformance() {
+        XCTAssert("hello world".contains(phrase: "world"))
+        XCTAssertFalse("hello world".contains(phrase: "xyz"))
+    }
+
+    /// @spec expression-evaluation/containsnode-cstring-factory/default-cstring-creation
+    func testContainsNode_CStringFactory() {
+        let cString = ContainsNode.cString(string: "Hello")
+        let expected = "hello".precomposedStringWithCanonicalMapping.cString(using: .utf8)!
+        XCTAssertEqual(cString, expected)
+    }
+
 }
 
 struct FalsyNode: SearchExpressionParser.Expression {

@@ -17,4 +17,15 @@ class PhraseCollectionConvertibleTests: XCTestCase {
         XCTAssertEqual(AndNode(ContainsNode("foo"), ContainsNode("bar")).phrases, ["foo", "bar"])
         XCTAssertEqual(OrNode(ContainsNode("foo"), ContainsNode("bar")).phrases, ["foo", "bar"])
     }
+
+    /// @spec phrase-extraction/runtime-type-casting-for-child-nodes/non-conforming-child
+    func testPhrases_NonConformingChild() {
+        let node = AndNode(ForeignExpression(), ContainsNode("bar"))
+        XCTAssertEqual(node.phrases, ["bar"])
+    }
+}
+
+private struct ForeignExpression: SearchExpressionParser.Expression {
+    func isSatisfied(by satisfiable: StringExpressionSatisfiable) -> Bool { false }
+    func isSatisfied(by satisfiable: CStringExpressionSatisfiable) -> Bool { false }
 }

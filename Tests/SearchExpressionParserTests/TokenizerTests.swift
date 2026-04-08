@@ -505,6 +505,30 @@ class TokenizerTests: XCTestCase {
 
     // MARK: - Complex terms
 
+    /// @spec operator-recognition/escaping-operators-with-backslash/escaped-and
+    func testTokens_EscapedAND() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\AND foo").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("AND"), Word("foo")])
+    }
+
+    /// @spec quoted-phrases/empty-quoted-phrase/empty-double-quotes
+    func testTokens_EmptyQuotedPhrase() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\"\"").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Phrase("")])
+    }
+
+    /// @spec whitespace-handling/whitespace-character-set/non-breaking-space-acts-as-whitespace
+    func testTokens_NonBreakingSpace() {
+
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "foo\u{00a0}bar").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("foo"), Word("bar")])
+    }
+
     /// @spec word-tokenization/quotation-marks-break-word-boundaries/quoted-phrase-after-words
     func testTokens_TermWithEverythingInIt() {
         guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "so this AND !that (or OR NOT so) is called \"  another \\\" hope\\\"   \" where you come from!").tokens()) else { return }
