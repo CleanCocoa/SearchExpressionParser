@@ -36,7 +36,7 @@ func ==(lhs: SearchExpressionParser.Expression, rhs: SearchExpressionParser.Expr
 func XCTAssertEqual(
     _ lhs: SearchExpressionParser.Expression,
     _ rhs: SearchExpressionParser.Expression,
-    file: StaticString = #file, line: UInt = #line) {
+    file: StaticString = #filePath, line: UInt = #line) {
 
     XCTAssert(lhs == rhs, "\(lhs) does not equal \(rhs)", file: file, line: line)
 }

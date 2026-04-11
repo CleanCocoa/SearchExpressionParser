@@ -115,7 +115,7 @@ class StackOverflowTests: XCTestCase {
         }
         deep = NotNode(deep)
         let evaluator = ContainmentEvaluator(evaluable: deep)
-        XCTAssertNoThrow(try evaluator.normalizedEvaluable())
+        let _ = evaluator.normalizedEvaluable()
     }
 
     // MARK: - Input Generators
@@ -152,7 +152,7 @@ class StackOverflowTests: XCTestCase {
 
     // MARK: - Test Runners
 
-    private func tryParse(_ input: String, file: StaticString = #file, line: UInt = #line) {
+    private func tryParse(_ input: String, file: StaticString = #filePath, line: UInt = #line) {
         do {
             let expression = try Parser.parse(searchString: input)
             XCTAssertFalse(expression is AnythingNode, "Unexpected AnythingNode for non-empty input", file: file, line: line)
@@ -161,11 +161,11 @@ class StackOverflowTests: XCTestCase {
         }
     }
 
-    private func tryParseExpectingThrow(_ input: String, file: StaticString = #file, line: UInt = #line) {
+    private func tryParseExpectingThrow(_ input: String, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertThrowsError(try Parser.parse(searchString: input), file: file, line: line)
     }
 
-    private func tryParseAndEval(_ input: String, file: StaticString = #file, line: UInt = #line) {
+    private func tryParseAndEval(_ input: String, file: StaticString = #filePath, line: UInt = #line) {
         do {
             let expression = try Parser.parse(searchString: input)
             _ = expression.isSatisfied(by: "hello world")
@@ -174,7 +174,7 @@ class StackOverflowTests: XCTestCase {
         }
     }
 
-    private func tryParseAndPhrases(_ input: String, file: StaticString = #file, line: UInt = #line) {
+    private func tryParseAndPhrases(_ input: String, file: StaticString = #filePath, line: UInt = #line) {
         do {
             let expression = try Parser.parse(searchString: input)
             if let evaluable = expression as? ContainmentEvaluator.Evaluable {

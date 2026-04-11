@@ -12,7 +12,7 @@ func ==(lhs: Token, rhs: Token) -> Bool {
 func XCTAssertEqual(
     _ lhs: [Token]?,
     _ rhs: [Token],
-    file: StaticString = #file, line: UInt = #line) {
+    file: StaticString = #filePath, line: UInt = #line) {
 
     guard let lhs = lhs else {
         XCTFail("nil is not equal to \(rhs.debugDescription)", file: file, line: line)
@@ -25,7 +25,7 @@ func XCTAssertEqual(
 func XCTAssertEqual(
     _ lhs: [Token],
     _ rhs: [Token],
-    file: StaticString = #file, line: UInt = #line) {
+    file: StaticString = #filePath, line: UInt = #line) {
 
     let leftEquatable  = lhs.map { AnyEquatable(target: $0, comparer: ==) }
     let rightEquatable = rhs.map { AnyEquatable(target: $0, comparer: ==) }

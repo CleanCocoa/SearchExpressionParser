@@ -8,7 +8,7 @@
 
 import XCTest
 
-func XCTAssertNoThrows(_ expression: @autoclosure () throws -> Void, _ message: String = "", file: StaticString = #file, line: UInt = #line) -> Bool {
+func XCTAssertNoThrows(_ expression: @autoclosure () throws -> Void, _ message: String = "", file: StaticString = #filePath, line: UInt = #line) -> Bool {
     var ok = false
     do {
         try expression()
@@ -20,7 +20,7 @@ func XCTAssertNoThrows(_ expression: @autoclosure () throws -> Void, _ message: 
     return ok
 }
 
-func XCTAssertNoThrows<T>(_ expression: @autoclosure () throws -> T, _ message: String = "", file: StaticString = #file, line: UInt = #line) -> T? {
+func XCTAssertNoThrows<T>(_ expression: @autoclosure () throws -> T, _ message: String = "", file: StaticString = #filePath, line: UInt = #line) -> T? {
     var t: T? = nil
     do {
         t = try expression()
@@ -31,7 +31,7 @@ func XCTAssertNoThrows<T>(_ expression: @autoclosure () throws -> T, _ message: 
     return t
 }
 
-func XCTAssertThrows<T>(_ expression: @autoclosure () throws -> T, _ message: String = "", file: StaticString = #file, line: UInt = #line) {
+func XCTAssertThrows<T>(_ expression: @autoclosure () throws -> T, _ message: String = "", file: StaticString = #filePath, line: UInt = #line) {
     do {
         let _ = try expression()
         XCTFail("Expected thrown error", file: file, line: line)

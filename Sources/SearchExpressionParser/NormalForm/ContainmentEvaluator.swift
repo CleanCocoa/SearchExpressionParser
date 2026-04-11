@@ -18,49 +18,26 @@ public struct ContainmentEvaluator {
 
     public typealias Evaluable = Expression & PhraseCollectionConvertible
 
-    @available(*, deprecated, message: "This error is no longer thrown. pushNegation is now iterative with no depth limit.")
-    public struct RecursionTooDeepError: Error {
-        public init() {}
-    }
-
     public let evaluable: Evaluable
-
-    @available(*, deprecated, message: "maxRecursion is no longer used. The algorithm is iterative.")
-    public let maxRecursion: Int
 
     public init(evaluable: Evaluable) {
         self.evaluable = evaluable
-        self.maxRecursion = 50
     }
 
-    @available(*, deprecated, message: "maxRecursion is no longer used. The algorithm is iterative.")
-    public init(evaluable: Evaluable, maxRecursion: Int) {
-        self.evaluable = evaluable
-        self.maxRecursion = maxRecursion
-    }
-
-    /// Produces an array of sets of phrases that may be
+    /// Produces an array of phrases that may be
     /// contained in the haystack when evaluating `expression`.
     ///
     /// These are not the actual phrases that _must_ be contained. These
     /// are phrases that _may_ be contained. `x OR y` will
     /// produce a collection of all candidates: `["x","y"]`.
     ///
-    /// See: `normalizedExpression()`.
-    ///
-    /// - returns: Empty array if normalization of `expression` recurses too deep.
+    /// See: `normalizedEvaluable()`.
     public func phrases() -> [String] {
-        do {
-            let evaluable = try normalizedEvaluable()
-            return evaluable.phrases
-        } catch {
-            return []
-        }
+        return normalizedEvaluable().phrases
     }
 
     /// Negation normal form.
-    /// - throws: `RecursionTooDeepError` if recursion is too deep. See `maxRecursion` to limit the depth of expressions.
-    public func normalizedEvaluable() throws -> Evaluable {
+    public func normalizedEvaluable() -> Evaluable {
         return pushNegationIteratively(evaluable)
     }
 

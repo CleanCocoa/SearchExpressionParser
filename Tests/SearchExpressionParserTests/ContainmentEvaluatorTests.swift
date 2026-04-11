@@ -7,41 +7,37 @@ class ContainmentEvaluatorTests: XCTestCase {
 
     // MARK: - Normalization
 
-    func normalForm(_ evaluable: ContainmentEvaluator.Evaluable) throws -> SearchExpressionParser.Expression {
-        return try ContainmentEvaluator(evaluable: evaluable).normalizedEvaluable()
+    func normalForm(_ evaluable: ContainmentEvaluator.Evaluable) -> SearchExpressionParser.Expression {
+        return ContainmentEvaluator(evaluable: evaluable).normalizedEvaluable()
     }
 
     /// @spec negation-normal-form/non-not-nodes-returned-unchanged/leaf-nodes-pass-through
     func testNormalized_Anything() {
-        guard let normalization = XCTAssertNoThrows(try normalForm(AnythingNode())) else { return }
         XCTAssertEqual(
-            normalization,
+            normalForm(AnythingNode()),
             AnythingNode())
     }
 
     /// @spec negation-normal-form/non-not-nodes-returned-unchanged/leaf-nodes-pass-through
     func testNormalized_Contains() {
-        guard let normalization = XCTAssertNoThrows(try normalForm(ContainsNode("something"))) else { return }
         XCTAssertEqual(
-            normalization,
+            normalForm(ContainsNode("something")),
             ContainsNode("something"))
     }
 
     /// @spec negation-normal-form/not-over-leaf-nodes-preserved/not-wrapping-a-containsnode
     func testNormalized_Not_1LevelDeep_Contains() {
         let expression = NotNode(ContainsNode("x"))
-        guard let normalization = XCTAssertNoThrows(try normalForm(expression)) else { return }
         XCTAssertEqual(
-            normalization,
+            normalForm(expression),
             NotNode(ContainsNode("x")))
     }
 
     /// @spec negation-normal-form/not-over-and-applies-de-morgans-law/not-wrapping-an-and-of-two-leaf-nodes
     func testNormalized_Not_1LevelDeep_And() {
         let expression = NotNode(AndNode(ContainsNode("x"), ContainsNode("y")))
-        guard let normalization = XCTAssertNoThrows(try normalForm(expression)) else { return }
         XCTAssertEqual(
-            normalization,
+            normalForm(expression),
             OrNode(NotNode(ContainsNode("x")),
                    NotNode(ContainsNode("y"))))
     }
@@ -49,9 +45,8 @@ class ContainmentEvaluatorTests: XCTestCase {
     /// @spec negation-normal-form/not-over-or-applies-de-morgans-law/not-wrapping-an-or-of-two-leaf-nodes
     func testNormalized_Not_1LevelDeep_Or() {
         let expression = NotNode(OrNode(ContainsNode("x"), ContainsNode("y")))
-        guard let normalization = XCTAssertNoThrows(try normalForm(expression)) else { return }
         XCTAssertEqual(
-            normalization,
+            normalForm(expression),
             AndNode(NotNode(ContainsNode("x")),
                     NotNode(ContainsNode("y"))))
     }
@@ -63,9 +58,8 @@ class ContainmentEvaluatorTests: XCTestCase {
                    ContainsNode("b")),
             AndNode(ContainsNode("c"),
                     ContainsNode("d"))))
-        guard let normalization = XCTAssertNoThrows(try normalForm(expression)) else { return }
         XCTAssertEqual(
-            normalization,
+            normalForm(expression),
             OrNode(AndNode(NotNode(ContainsNode("a")),
                            NotNode(ContainsNode("b"))),
                    OrNode(NotNode(ContainsNode("c")),
@@ -110,21 +104,6 @@ class ContainmentEvaluatorTests: XCTestCase {
         XCTAssertEqual(phrases(OrNode(ContainsNode("foo"), ContainsNode("bar"))), ["foo", "bar"])
         XCTAssertEqual(phrases(OrNode(NotNode(ContainsNode("foo")), ContainsNode("bar"))), ["bar"])
         XCTAssertEqual(phrases(OrNode(ContainsNode("foo"), NotNode(ContainsNode("bar")))), ["foo"])
-    }
-
-    /// @spec negation-normal-form/recursion-depth-guard/default-recursion-limit
-    func testNormalized_DefaultRecursionLimit() {
-        let evaluator = ContainmentEvaluator(evaluable: ContainsNode("x"))
-        XCTAssertEqual(evaluator.maxRecursion, 50)
-    }
-
-    /// @spec negation-normal-form/recursion-depth-guard/custom-recursion-limit
-    func testNormalized_CustomRecursionLimit_Succeeds() {
-        let expression = NotNode(AndNode(
-            NotNode(AndNode(ContainsNode("a"), ContainsNode("b"))),
-            ContainsNode("c")))
-        let evaluator = ContainmentEvaluator(evaluable: expression, maxRecursion: 1)
-        XCTAssertNoThrow(try evaluator.normalizedEvaluable())
     }
 
     /// @spec negation-normal-form/recursion-depth-guard/default-initialization-no-longer-enforces-limit
