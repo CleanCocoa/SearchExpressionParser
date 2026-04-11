@@ -38,7 +38,7 @@ The system SHALL return an empty array when collecting phrases from a `NotNode`,
 
 ### Requirement: AndNode concatenates phrases from both children
 
-The system SHALL return the concatenation of phrases from the left-hand side followed by phrases from the right-hand side when collecting phrases from an `AndNode`.
+The system SHALL return the concatenation of phrases from the left-hand side followed by phrases from the right-hand side when collecting phrases from an `AndNode`. The implementation SHALL use O(1) call stack depth via iterative tree walking.
 
 #### Scenario: Two positive terms
 - **GIVEN** an `AndNode` with `ContainsNode("foo")` and `ContainsNode("bar")`
@@ -52,7 +52,7 @@ The system SHALL return the concatenation of phrases from the left-hand side fol
 
 ### Requirement: OrNode concatenates phrases from both children
 
-The system SHALL return the concatenation of phrases from both branches of an `OrNode`. Phrases are "may contain" candidates, not "must contain", so OR branches contribute all alternatives.
+The system SHALL return the concatenation of phrases from both branches of an `OrNode`. Phrases are "may contain" candidates, not "must contain", so OR branches contribute all alternatives. The implementation SHALL use O(1) call stack depth via iterative tree walking.
 
 #### Scenario: Two alternative terms
 - **GIVEN** an `OrNode` with `ContainsNode("foo")` and `ContainsNode("bar")`
@@ -75,21 +75,12 @@ The system SHALL use runtime type casting (`as? PhraseCollectionConvertible`) wh
 
 ### Requirement: ContainmentEvaluator normalizes before collecting phrases
 
-The system SHALL normalize the expression to negation normal form before collecting phrases. `ContainmentEvaluator.phrases()` calls `normalizedEvaluable()` (which pushes negations inward via De Morgan's laws) and then collects phrases from the result.
+The system SHALL normalize the expression to negation normal form before collecting phrases. `ContainmentEvaluator.phrases()` calls `normalizedEvaluable()` (which pushes negations inward via De Morgan's laws iteratively) and then collects phrases from the result.
 
 #### Scenario: Negated AND expression
 - **GIVEN** `NOT(x AND y)` as input to `ContainmentEvaluator`
 - **WHEN** `phrases()` is called
 - **THEN** normalization produces `NOT(x) OR NOT(y)`, and phrases returns `[]`
-
-### Requirement: ContainmentEvaluator returns empty array on recursion overflow
-
-The system SHALL return an empty array from `phrases()` if normalization throws `RecursionTooDeepError` due to exceeding `maxRecursion` depth (default 50).
-
-#### Scenario: Deeply nested expression
-- **GIVEN** an expression that exceeds the recursion limit
-- **WHEN** `phrases()` is called
-- **THEN** the result is `[]`
 
 ## Technical Notes
 - **Implementation**: `Sources/SearchExpressionParser/NormalForm/PhraseCollectionConvertible.swift`, `Sources/SearchExpressionParser/NormalForm/ContainmentEvaluator.swift`

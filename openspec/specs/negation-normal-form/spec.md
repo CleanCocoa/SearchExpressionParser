@@ -61,19 +61,19 @@ The system SHALL recursively apply De Morgan's laws through multiple levels of n
 
 ### Requirement: Recursion depth guard
 
-The system MUST throw `RecursionTooDeepError` when the recursion depth of `pushNegation` reaches or exceeds `maxRecursion`.
+The system SHALL soft-deprecate the recursion depth guard. `maxRecursion` SHALL be accepted but ignored. `RecursionTooDeepError` SHALL be marked as deprecated and never thrown. `normalizedEvaluable()` SHALL remain `throws` for source compatibility but SHALL NOT throw.
 
-#### Scenario: Default recursion limit
+#### Scenario: Default initialization no longer enforces limit
 
 - **GIVEN** a `ContainmentEvaluator` initialized with default parameters
 - **WHEN** the expression tree depth exceeds 50 levels during normalization
-- **THEN** the system throws `RecursionTooDeepError`
+- **THEN** normalization SHALL complete successfully without throwing
 
-#### Scenario: Custom recursion limit
+#### Scenario: Custom recursion limit ignored
 
-- **GIVEN** a `ContainmentEvaluator` initialized with `maxRecursion: N`
-- **WHEN** the expression tree depth reaches N during normalization
-- **THEN** the system throws `RecursionTooDeepError`
+- **GIVEN** a `ContainmentEvaluator` initialized with `maxRecursion: 5`
+- **WHEN** the expression tree depth exceeds 5 during normalization
+- **THEN** normalization SHALL complete successfully without throwing
 
 ### Requirement: Phrases extraction excludes negated terms
 
@@ -85,11 +85,6 @@ The system SHALL return only non-negated leaf phrases from the normalized expres
 - **WHEN** `phrases()` is called
 - **THEN** the result is `["foo"]`
 
-#### Scenario: Recursion too deep returns empty phrases
-
-- **GIVEN** an expression that exceeds the recursion limit during normalization
-- **WHEN** `phrases()` is called
-- **THEN** the result is an empty array `[]`
 
 ## Technical Notes
 - **Implementation**: `Sources/SearchExpressionParser/NormalForm/ContainmentEvaluator.swift`

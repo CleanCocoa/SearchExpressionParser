@@ -91,7 +91,7 @@ When a `ContainsNode` is initialized with an empty string `""`, it SHALL return 
 
 ### Requirement: AndNode Short-Circuit Evaluation
 
-`AndNode` SHALL evaluate its `lhs` expression first. If `lhs` returns `false`, the result SHALL be `false` without evaluating `rhs`. If `lhs` returns `true`, it SHALL evaluate `rhs` and return that result. This applies to both evaluation paths.
+`AndNode` SHALL evaluate its `lhs` expression first. If `lhs` returns `false`, the result SHALL be `false` without evaluating `rhs`. If `lhs` returns `true`, it SHALL evaluate `rhs` and return that result. This applies to both evaluation paths. The implementation SHALL use O(1) call stack depth via iterative evaluation.
 
 #### Scenario: Both true
 
@@ -119,7 +119,7 @@ When a `ContainsNode` is initialized with an empty string `""`, it SHALL return 
 
 ### Requirement: OrNode Short-Circuit Evaluation
 
-`OrNode` SHALL evaluate its `lhs` expression first. If `lhs` returns `true`, the result SHALL be `true` without evaluating `rhs`. If `lhs` returns `false`, it SHALL evaluate `rhs` and return that result. This applies to both evaluation paths.
+`OrNode` SHALL evaluate its `lhs` expression first. If `lhs` returns `true`, the result SHALL be `true` without evaluating `rhs`. If `lhs` returns `false`, it SHALL evaluate `rhs` and return that result. This applies to both evaluation paths. The implementation SHALL use O(1) call stack depth via iterative evaluation.
 
 #### Scenario: Both true
 
@@ -147,7 +147,7 @@ When a `ContainsNode` is initialized with an empty string `""`, it SHALL return 
 
 ### Requirement: NotNode Boolean Negation
 
-`NotNode` SHALL return the boolean negation of its inner expression's evaluation result. This applies to both evaluation paths.
+`NotNode` SHALL return the boolean negation of its inner expression's evaluation result. This applies to both evaluation paths. The implementation SHALL use O(1) call stack depth via iterative evaluation.
 
 #### Scenario: Negate true
 
