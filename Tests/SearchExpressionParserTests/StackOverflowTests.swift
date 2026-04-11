@@ -65,6 +65,14 @@ class StackOverflowTests: XCTestCase {
         }
     }
 
+    func testPerformance_ParseAndEval1000Tokens() {
+        let input = implicitANDWords(count: 1000)
+        let expr = try! Parser.parse(searchString: input)
+        measure {
+            _ = expr.isSatisfied(by: "hello world")
+        }
+    }
+
     // MARK: - Vector 7: Evaluate deep trees with isSatisfied
 
     func testEvalImplicitAND_100()   { tryParseAndEval(implicitANDWords(count: 100)) }
