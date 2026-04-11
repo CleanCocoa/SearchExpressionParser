@@ -16,51 +16,95 @@ public struct Parser {
         return try parseExpression(tokenBuffer)
     }
 
-    private func parseExpression(_ tokenBuffer: TokenBuffer) throws -> Expression {
+    private func parseExpression(_ tokenBuffer: TokenBuffer, depth: Int = 0) throws -> Expression {
 
-        let node = try parsePrimary(tokenBuffer)
+        let first = try parsePrimary(tokenBuffer, depth: depth)
 
-        // Skip closing parens (which are guaranteed to be balanced with opening parens)
+        guard tokenBuffer.isNotAtEnd else { return first }
+
         if tokenBuffer.peekToken() is ClosingParens {
             tokenBuffer.consume()
-            return node
+            return first
         }
 
-        return try parseBinaryOperator(tokenBuffer, lhs: node)
+        var exprs: [SearchExpressionParser.Expression] = [first]
+        var ops: [BinaryOperator?] = []
+
+        while tokenBuffer.isNotAtEnd && !(tokenBuffer.peekToken() is ClosingParens) {
+            var op: BinaryOperator? = nil
+            if let binOp = tokenBuffer.peekToken() as? BinaryOperator {
+                op = binOp
+                tokenBuffer.consume()
+
+                guard tokenBuffer.isNotAtEnd else {
+                    ops.append(nil)
+                    exprs.append(ContainsNode(token: binOp))
+                    break
+                }
+            }
+
+            ops.append(op)
+            exprs.append(try parsePrimary(tokenBuffer, depth: depth))
+        }
+
+        if tokenBuffer.peekToken() is ClosingParens {
+            tokenBuffer.consume()
+        }
+
+        var result = exprs[exprs.count - 1]
+        for i in stride(from: exprs.count - 2, through: 0, by: -1) {
+            switch ops[i] {
+            case .or:
+                result = OrNode(exprs[i], result)
+            case .and, nil:
+                result = AndNode(exprs[i], result)
+            }
+        }
+
+        return result
     }
 
-    private func parsePrimary(_ tokenBuffer: TokenBuffer) throws -> Expression {
+    private func parsePrimary(_ tokenBuffer: TokenBuffer, depth: Int = 0) throws -> SearchExpressionParser.Expression {
+
+        var negations: [UnaryOperator] = []
+        while let op = tokenBuffer.peekToken() as? UnaryOperator {
+            negations.append(op)
+            tokenBuffer.consume()
+        }
+
+        if !negations.isEmpty {
+            guard tokenBuffer.isNotAtEnd else {
+                let literal = ContainsNode(token: negations.removeLast())
+                var expr: SearchExpressionParser.Expression = literal
+                for _ in negations { expr = NotNode(expr) }
+                return expr
+            }
+
+            let base: SearchExpressionParser.Expression
+            if tokenBuffer.peekToken() is OpeningParens {
+                base = try parseOpeningParens(tokenBuffer, depth: depth)
+            } else {
+                base = try parseContainsNode(tokenBuffer)
+            }
+
+            var expr = base
+            for _ in negations { expr = NotNode(expr) }
+            return expr
+        }
 
         switch tokenBuffer.peekToken() {
         case .none:
             return AnythingNode()
 
-        case .some(UnaryOperator.bang),
-             .some(UnaryOperator.not):
-            return try parseNegation(tokenBuffer)
-
         case .some(is OpeningParens):
-            return try parseOpeningParens(tokenBuffer)
+            return try parseOpeningParens(tokenBuffer, depth: depth)
 
         case .some(_):
             return try parseContainsNode(tokenBuffer)
         }
     }
 
-    private func parseNegation(_ tokenBuffer: TokenBuffer) throws -> Expression {
-
-        guard let operatorToken = tokenBuffer.peekToken() as? UnaryOperator else {
-            throw ParseError.expectedUnaryOperatorInNegation
-        }
-
-        tokenBuffer.consume()
-
-        guard tokenBuffer.isNotAtEnd else { return ContainsNode(token: operatorToken) }
-        let expression = try parsePrimary(tokenBuffer)
-        return NotNode(expression)
-    }
-
-    private func parseContainsNode(_ tokenBuffer: TokenBuffer) throws -> Expression {
+    private func parseContainsNode(_ tokenBuffer: TokenBuffer) throws -> SearchExpressionParser.Expression {
 
         guard let current = tokenBuffer.peekToken() else {
             throw ParseError.expectedTokenAtExpressionStart
@@ -70,29 +114,11 @@ public struct Parser {
         return ContainsNode(token: current)
     }
 
-    private func parseBinaryOperator(_ tokenBuffer: TokenBuffer, lhs: Expression) throws -> Expression {
-        guard let operatorToken = tokenBuffer.peekToken() else { return lhs }
+    private func parseOpeningParens(_ tokenBuffer: TokenBuffer, depth: Int = 0) throws -> SearchExpressionParser.Expression {
 
-        switch operatorToken {
-        case BinaryOperator.and:
-            tokenBuffer.consume()
-            guard tokenBuffer.isNotAtEnd else { return AndNode(lhs, ContainsNode(token: operatorToken)) }
-            let rhs = try parseExpression(tokenBuffer)
-            return AndNode(lhs, rhs)
-
-        case BinaryOperator.or:
-            tokenBuffer.consume()
-            guard tokenBuffer.isNotAtEnd else { return AndNode(lhs, ContainsNode(token: operatorToken)) }
-            let rhs = try parseExpression(tokenBuffer)
-            return OrNode(lhs, rhs)
-
-        default:
-            let rhs = try parseExpression(tokenBuffer)
-            return AndNode(lhs, rhs)
+        guard depth <= 100 else {
+            throw ParseError.parenNestingTooDeep
         }
-    }
-
-    private func parseOpeningParens(_ tokenBuffer: TokenBuffer) throws -> Expression {
 
         guard let openingParensToken = tokenBuffer.peekToken() as? OpeningParens else {
             throw ParseError.expectedOpeningParens
@@ -107,7 +133,7 @@ public struct Parser {
                 ContainsNode(closingParensToken.string))
         }
 
-        return try parseExpression(tokenBuffer)
+        return try parseExpression(tokenBuffer, depth: depth + 1)
     }
 }
 
@@ -116,51 +142,30 @@ internal enum ParseError: Error {
     case expectedUnaryOperatorInNegation
     case expectedTermAfterNegation
     case expectedOpeningParens
+    case parenNestingTooDeep
 }
 
 // MARK: - Clean up unbalanced parens
 
 internal func balanceParentheses(tokens: [Token]) -> [Token] {
-    switch balanceParentheses(tokens: tokens, start: 0) {
-    case .closeCurrent(at: _):
-        assertionFailure()
-        return tokens
+    var result = tokens
+    var openStack: [Int] = []
 
-    case .end(tokens: let result):
-        return result
-    }
-}
-
-private enum Balance {
-    case closeCurrent(at: Int)
-    case end(tokens: [Token])
-}
-
-private func balanceParentheses(tokens: [Token], start: Int) -> Balance {
-
-    let isRootLevel = (start == 0)
-    var tokens = tokens
-    var head = start
-    while head < tokens.count {
-        let token = tokens[head]
-        if token is OpeningParens {
-            let innerBalance = balanceParentheses(tokens: tokens, start: head + 1)
-            switch innerBalance {
-            case .closeCurrent(at: let occupied): head = occupied
-            case .end(var replacement):
-                replacement[head] = Word(token.string)
-                tokens = replacement
-            }
-        } else if token is ClosingParens {
-            if isRootLevel {
-                // This is the root level, so it indicates this ")" had no opener.
-                tokens[head] = Word(token.string)
+    for i in 0..<result.count {
+        if result[i] is OpeningParens {
+            openStack.append(i)
+        } else if result[i] is ClosingParens {
+            if openStack.isEmpty {
+                result[i] = Word(result[i].string)
             } else {
-                // This is not the root level, so it's closing an open parens somewhere
-                return .closeCurrent(at: head)
+                openStack.removeLast()
             }
         }
-        head += 1
     }
-    return .end(tokens: tokens)
+
+    for i in openStack {
+        result[i] = Word(result[i].string)
+    }
+
+    return result
 }

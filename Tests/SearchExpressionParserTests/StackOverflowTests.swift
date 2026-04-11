@@ -25,10 +25,10 @@ class StackOverflowTests: XCTestCase {
 
     func testNestedParens_100()   { tryParse(nestedParens(depth: 100)) }
     func testNestedParens_500()   { tryParse(nestedParens(depth: 500)) }
-    func testNestedParens_1000()  { tryParse(nestedParens(depth: 1000)) }
-    func testNestedParens_2000()  { tryParse(nestedParens(depth: 2000)) }
-    func testNestedParens_5000()  { tryParse(nestedParens(depth: 5000)) }
-    func testNestedParens_10000() { tryParse(nestedParens(depth: 10000)) }
+    func testNestedParens_200()   { tryParseExpectingThrow(nestedParens(depth: 200)) }
+    func testNestedParens_1000()  { tryParseExpectingThrow(nestedParens(depth: 1000)) }
+    func testNestedParens_5000()  { tryParseExpectingThrow(nestedParens(depth: 5000)) }
+    func testNestedParens_10000() { tryParseExpectingThrow(nestedParens(depth: 10000)) }
 
     // MARK: - Vector 4: Chained negations "! ! ! ... ! a"
 
@@ -42,10 +42,10 @@ class StackOverflowTests: XCTestCase {
     // MARK: - Vector 5: Combined nested parens + AND: "(a AND (b AND (c AND ...)))"
 
     func testNestedParensAND_100()   { tryParse(nestedParensAND(depth: 100)) }
-    func testNestedParensAND_500()   { tryParse(nestedParensAND(depth: 500)) }
-    func testNestedParensAND_1000()  { tryParse(nestedParensAND(depth: 1000)) }
-    func testNestedParensAND_2000()  { tryParse(nestedParensAND(depth: 2000)) }
-    func testNestedParensAND_5000()  { tryParse(nestedParensAND(depth: 5000)) }
+    func testNestedParensAND_200()   { tryParseExpectingThrow(nestedParensAND(depth: 200)) }
+    func testNestedParensAND_500()   { tryParseExpectingThrow(nestedParensAND(depth: 500)) }
+    func testNestedParensAND_1000()  { tryParseExpectingThrow(nestedParensAND(depth: 1000)) }
+    func testNestedParensAND_5000()  { tryParseExpectingThrow(nestedParensAND(depth: 5000)) }
 
     // MARK: - Vector 6: OR-chained words ("a OR b OR c ...")
 
@@ -55,6 +55,15 @@ class StackOverflowTests: XCTestCase {
     func testExplicitOR_2000()  { tryParse(explicitORWords(count: 2000)) }
     func testExplicitOR_5000()  { tryParse(explicitORWords(count: 5000)) }
     func testExplicitOR_10000() { tryParse(explicitORWords(count: 10000)) }
+
+    // MARK: - Benchmark
+
+    func testPerformance_Parse1000Tokens() {
+        let input = implicitANDWords(count: 1000)
+        measure {
+            _ = try! Parser.parse(searchString: input)
+        }
+    }
 
     // MARK: - Vector 7: Evaluate deep trees with isSatisfied
 
@@ -115,6 +124,10 @@ class StackOverflowTests: XCTestCase {
         } catch {
             XCTFail("Parse threw: \(error)", file: file, line: line)
         }
+    }
+
+    private func tryParseExpectingThrow(_ input: String, file: StaticString = #file, line: UInt = #line) {
+        XCTAssertThrowsError(try Parser.parse(searchString: input), file: file, line: line)
     }
 
     private func tryParseAndEval(_ input: String, file: StaticString = #file, line: UInt = #line) {
