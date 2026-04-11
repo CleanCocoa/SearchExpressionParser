@@ -77,11 +77,11 @@ public struct NotNode: Expression {
     }
 
     public func isSatisfied(by satisfiable: StringExpressionSatisfiable) -> Bool {
-        return !expression.isSatisfied(by: satisfiable)
+        return iterativeIsSatisfied(self, by: satisfiable)
     }
 
     public func isSatisfied(by satisfiable: CStringExpressionSatisfiable) -> Bool {
-        return !expression.isSatisfied(by: satisfiable)
+        return iterativeIsSatisfied(self, by: satisfiable)
     }
 }
 
@@ -95,11 +95,11 @@ public struct AndNode: Expression {
     }
 
     public func isSatisfied(by satisfiable: StringExpressionSatisfiable) -> Bool {
-        return lhs.isSatisfied(by: satisfiable) && rhs.isSatisfied(by: satisfiable)
+        return iterativeIsSatisfied(self, by: satisfiable)
     }
 
     public func isSatisfied(by satisfiable: CStringExpressionSatisfiable) -> Bool {
-        return lhs.isSatisfied(by: satisfiable) && rhs.isSatisfied(by: satisfiable)
+        return iterativeIsSatisfied(self, by: satisfiable)
     }
 }
 
@@ -113,10 +113,107 @@ public struct OrNode: Expression {
     }
 
     public func isSatisfied(by satisfiable: StringExpressionSatisfiable) -> Bool {
-        return lhs.isSatisfied(by: satisfiable) || rhs.isSatisfied(by: satisfiable)
+        return iterativeIsSatisfied(self, by: satisfiable)
     }
 
     public func isSatisfied(by satisfiable: CStringExpressionSatisfiable) -> Bool {
-        return lhs.isSatisfied(by: satisfiable) || rhs.isSatisfied(by: satisfiable)
+        return iterativeIsSatisfied(self, by: satisfiable)
     }
+}
+
+private enum EvalFrame {
+    case evaluate(Expression)
+    case applyAnd(Expression)
+    case applyOr(Expression)
+    case applyNot
+}
+
+private func iterativeIsSatisfied(_ root: Expression, by satisfiable: StringExpressionSatisfiable) -> Bool {
+    var stack: [EvalFrame] = [.evaluate(root)]
+    var values: [Bool] = []
+
+    while let frame = stack.popLast() {
+        switch frame {
+        case .evaluate(let expr):
+            switch expr {
+            case is AnythingNode:
+                values.append(true)
+            case let c as ContainsNode:
+                values.append(satisfiable.contains(phrase: c.string))
+            case let n as NotNode:
+                stack.append(.applyNot)
+                stack.append(.evaluate(n.expression))
+            case let a as AndNode:
+                stack.append(.applyAnd(a.rhs))
+                stack.append(.evaluate(a.lhs))
+            case let o as OrNode:
+                stack.append(.applyOr(o.rhs))
+                stack.append(.evaluate(o.lhs))
+            default:
+                values.append(expr.isSatisfied(by: satisfiable))
+            }
+        case .applyNot:
+            values.append(!values.removeLast())
+        case .applyAnd(let rhs):
+            if values.last == false {
+                // short-circuit
+            } else {
+                values.removeLast()
+                stack.append(.evaluate(rhs))
+            }
+        case .applyOr(let rhs):
+            if values.last == true {
+                // short-circuit
+            } else {
+                values.removeLast()
+                stack.append(.evaluate(rhs))
+            }
+        }
+    }
+    return values.last ?? true
+}
+
+private func iterativeIsSatisfied(_ root: Expression, by satisfiable: CStringExpressionSatisfiable) -> Bool {
+    var stack: [EvalFrame] = [.evaluate(root)]
+    var values: [Bool] = []
+
+    while let frame = stack.popLast() {
+        switch frame {
+        case .evaluate(let expr):
+            switch expr {
+            case is AnythingNode:
+                values.append(true)
+            case let c as ContainsNode:
+                values.append(satisfiable.matches(needle: c.cString))
+            case let n as NotNode:
+                stack.append(.applyNot)
+                stack.append(.evaluate(n.expression))
+            case let a as AndNode:
+                stack.append(.applyAnd(a.rhs))
+                stack.append(.evaluate(a.lhs))
+            case let o as OrNode:
+                stack.append(.applyOr(o.rhs))
+                stack.append(.evaluate(o.lhs))
+            default:
+                values.append(expr.isSatisfied(by: satisfiable))
+            }
+        case .applyNot:
+            values.append(!values.removeLast())
+        case .applyAnd(let rhs):
+            if values.last == false {
+                // short-circuit
+            } else {
+                values.removeLast()
+                stack.append(.evaluate(rhs))
+            }
+        case .applyOr(let rhs):
+            if values.last == true {
+                // short-circuit
+            } else {
+                values.removeLast()
+                stack.append(.evaluate(rhs))
+            }
+        }
+    }
+    return values.last ?? true
 }

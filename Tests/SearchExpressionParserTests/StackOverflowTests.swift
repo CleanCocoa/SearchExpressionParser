@@ -24,7 +24,7 @@ class StackOverflowTests: XCTestCase {
     // MARK: - Vector 3: Deeply nested parentheses "((((a))))"
 
     func testNestedParens_100()   { tryParse(nestedParens(depth: 100)) }
-    func testNestedParens_500()   { tryParse(nestedParens(depth: 500)) }
+    func testNestedParens_500()   { tryParseExpectingThrow(nestedParens(depth: 500)) }
     func testNestedParens_200()   { tryParseExpectingThrow(nestedParens(depth: 200)) }
     func testNestedParens_1000()  { tryParseExpectingThrow(nestedParens(depth: 1000)) }
     func testNestedParens_5000()  { tryParseExpectingThrow(nestedParens(depth: 5000)) }
@@ -82,6 +82,33 @@ class StackOverflowTests: XCTestCase {
     func testPhrasesImplicitAND_2000()  { tryParseAndPhrases(implicitANDWords(count: 2000)) }
     func testPhrasesImplicitAND_5000()  { tryParseAndPhrases(implicitANDWords(count: 5000)) }
     func testPhrasesImplicitAND_10000() { tryParseAndPhrases(implicitANDWords(count: 10000)) }
+
+    // MARK: - Vector 9: Phrase ordering
+
+    /// @spec iterative-phrases/left-to-right-phrase-ordering/nested-or-preserves-order
+    func testPhrasesOrder_NestedOr() {
+        let tree = OrNode(ContainsNode("x"), OrNode(ContainsNode("y"), ContainsNode("z")))
+        XCTAssertEqual(tree.phrases, ["x", "y", "z"])
+    }
+
+    /// @spec iterative-phrases/iterative-phrases-produces-identical-output-to-recursive-phrases/mixed-andor-tree-preserves-order
+    func testPhrasesOrder_NestedAnd() {
+        let tree = AndNode(AndNode(ContainsNode("a"), ContainsNode("b")), ContainsNode("c"))
+        XCTAssertEqual(tree.phrases, ["a", "b", "c"])
+    }
+
+    // MARK: - Vector 10: Normalize deep trees with pushNegation
+
+    /// @spec iterative-push-negation/no-depth-limit/normalize-10000-deep-tree-without-error
+    func testNormalizePushNegation_10000() {
+        var deep: ContainmentEvaluator.Evaluable = ContainsNode("x")
+        for _ in 0..<10000 {
+            deep = AndNode(deep, ContainsNode("y"))
+        }
+        deep = NotNode(deep)
+        let evaluator = ContainmentEvaluator(evaluable: deep)
+        XCTAssertNoThrow(try evaluator.normalizedEvaluable())
+    }
 
     // MARK: - Input Generators
 

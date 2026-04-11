@@ -119,25 +119,22 @@ class ContainmentEvaluatorTests: XCTestCase {
     }
 
     /// @spec negation-normal-form/recursion-depth-guard/custom-recursion-limit
-    func testNormalized_CustomRecursionLimit() {
+    func testNormalized_CustomRecursionLimit_Succeeds() {
         let expression = NotNode(AndNode(
             NotNode(AndNode(ContainsNode("a"), ContainsNode("b"))),
             ContainsNode("c")))
         let evaluator = ContainmentEvaluator(evaluable: expression, maxRecursion: 1)
-        XCTAssertThrowsError(try evaluator.normalizedEvaluable()) { error in
-            XCTAssert(error is ContainmentEvaluator.RecursionTooDeepError)
-        }
+        XCTAssertNoThrow(try evaluator.normalizedEvaluable())
     }
 
-    /// @spec negation-normal-form/phrases-extraction-excludes-negated-terms/recursion-too-deep-returns-empty-phrases
-    /// @spec phrase-extraction/containmentevaluator-returns-empty-array-on-recursion-overflow/deeply-nested-expression
-    func testPhrases_RecursionTooDeep_ReturnsEmpty() {
+    /// @spec negation-normal-form/recursion-depth-guard/default-initialization-no-longer-enforces-limit
+    func testPhrases_DeepNesting_Succeeds() {
         var deep: ContainmentEvaluator.Evaluable = ContainsNode("x")
         for _ in 0..<60 {
             deep = NotNode(NotNode(deep))
         }
         let evaluator = ContainmentEvaluator(evaluable: deep)
-        XCTAssertEqual(evaluator.phrases(), [])
+        XCTAssertEqual(evaluator.phrases(), ["x"])
     }
 
     /// @spec phrase-extraction/containmentevaluator-normalizes-before-collecting-phrases/negated-and-expression

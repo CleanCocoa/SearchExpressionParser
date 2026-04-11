@@ -18,15 +18,23 @@ public struct ContainmentEvaluator {
 
     public typealias Evaluable = Expression & PhraseCollectionConvertible
 
+    @available(*, deprecated, message: "This error is no longer thrown. pushNegation is now iterative with no depth limit.")
     public struct RecursionTooDeepError: Error {
         public init() {}
     }
 
     public let evaluable: Evaluable
+
+    @available(*, deprecated, message: "maxRecursion is no longer used. The algorithm is iterative.")
     public let maxRecursion: Int
 
-    public init(evaluable: Evaluable, maxRecursion: Int = 50) {
+    public init(evaluable: Evaluable) {
+        self.evaluable = evaluable
+        self.maxRecursion = 50
+    }
 
+    @available(*, deprecated, message: "maxRecursion is no longer used. The algorithm is iterative.")
+    public init(evaluable: Evaluable, maxRecursion: Int) {
         self.evaluable = evaluable
         self.maxRecursion = maxRecursion
     }
@@ -53,27 +61,73 @@ public struct ContainmentEvaluator {
     /// Negation normal form.
     /// - throws: `RecursionTooDeepError` if recursion is too deep. See `maxRecursion` to limit the depth of expressions.
     public func normalizedEvaluable() throws -> Evaluable {
-        return try pushNegation(evaluable)
+        return pushNegationIteratively(evaluable)
     }
 
-    private func pushNegation(_ evaluable: Evaluable, level: Int = 0) throws -> Evaluable {
+    private enum Instruction {
+        case leaf(Evaluable)
+        case buildAnd
+        case buildOr
+    }
 
-        guard level < maxRecursion else { throw RecursionTooDeepError() }
-        guard let notNode = evaluable as? NotNode else { return evaluable }
+    private func pushNegationIteratively(_ root: Evaluable) -> Evaluable {
+        var work: [(Evaluable, Bool)] = [(root, false)]
+        var instructions: [Instruction] = []
 
-        switch notNode.expression {
-        case let andSubNode as AndNode:
-            return OrNode(
-                try pushNegation(NotNode(andSubNode.lhs), level: level + 1),
-                try pushNegation(NotNode(andSubNode.rhs), level: level + 1))
-
-        case let orSubNode as OrNode:
-            return AndNode(
-                try pushNegation(NotNode(orSubNode.lhs), level: level + 1),
-                try pushNegation(NotNode(orSubNode.rhs), level: level + 1))
-
-        default:
-            return notNode
+        while let (expr, negated) = work.popLast() {
+            if let notNode = expr as? NotNode {
+                if let inner = notNode.expression as? Evaluable {
+                    work.append((inner, !negated))
+                } else {
+                    instructions.append(.leaf(negated ? NotNode(notNode) : notNode))
+                }
+            } else if let andNode = expr as? AndNode, negated,
+                      let lhs = andNode.lhs as? Evaluable,
+                      let rhs = andNode.rhs as? Evaluable {
+                instructions.append(.buildOr)
+                work.append((rhs, true))
+                work.append((lhs, true))
+            } else if let orNode = expr as? OrNode, negated,
+                      let lhs = orNode.lhs as? Evaluable,
+                      let rhs = orNode.rhs as? Evaluable {
+                instructions.append(.buildAnd)
+                work.append((rhs, true))
+                work.append((lhs, true))
+            } else if let andNode = expr as? AndNode,
+                      let lhs = andNode.lhs as? Evaluable,
+                      let rhs = andNode.rhs as? Evaluable {
+                instructions.append(.buildAnd)
+                work.append((rhs, false))
+                work.append((lhs, false))
+            } else if let orNode = expr as? OrNode,
+                      let lhs = orNode.lhs as? Evaluable,
+                      let rhs = orNode.rhs as? Evaluable {
+                instructions.append(.buildOr)
+                work.append((rhs, false))
+                work.append((lhs, false))
+            } else if negated {
+                instructions.append(.leaf(NotNode(expr)))
+            } else {
+                instructions.append(.leaf(expr))
+            }
         }
+
+        var results: [Evaluable] = []
+        for instruction in instructions.reversed() {
+            switch instruction {
+            case .leaf(let e):
+                results.append(e)
+            case .buildAnd:
+                let lhs = results.removeLast()
+                let rhs = results.removeLast()
+                results.append(AndNode(lhs, rhs))
+            case .buildOr:
+                let lhs = results.removeLast()
+                let rhs = results.removeLast()
+                results.append(OrNode(lhs, rhs))
+            }
+        }
+
+        return results.last ?? root
     }
 }
