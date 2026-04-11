@@ -44,7 +44,9 @@ public struct Parser {
             }
 
             ops.append(op)
+            let indexBefore = tokenBuffer.currentIndex
             exprs.append(try parsePrimary(tokenBuffer, depth: depth))
+            assert(tokenBuffer.currentIndex > indexBefore, "parsePrimary did not consume any tokens")
         }
 
         if tokenBuffer.peekToken() is ClosingParens {
