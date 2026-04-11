@@ -21,7 +21,7 @@ public struct ClosingParens: Token {
     public let string = ")"
 }
 
-public enum BinaryOperator: Token {
+public enum BinaryOperator: Token, Sendable {
     case and
     case or
 
@@ -33,7 +33,7 @@ public enum BinaryOperator: Token {
     }
 }
 
-public enum UnaryOperator: Token {
+public enum UnaryOperator: Token, Sendable {
     case bang
     case not
 

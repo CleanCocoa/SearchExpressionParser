@@ -77,7 +77,7 @@ extension TokenCharacterBuffer {
 }
 
 internal struct TokenizerError: Error {
-    enum Kind {
+    enum Kind: Sendable {
         case cannotExtractOpeningParens
         case cannotExtractQuotationMark
         case cannotExtractUnaryOperator(UnaryOperator)

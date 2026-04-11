@@ -42,7 +42,7 @@ public struct ContainsNode: Expression {
     public let string: String
     public let cString: CString
 
-    public static var cStringFactory: (String) -> CString = ContainsNode.cString(string:)
+    public nonisolated(unsafe) static var cStringFactory: (String) -> CString = ContainsNode.cString(string:)
 
     public static func cString(string: String) -> CString {
         return string.precomposedStringWithCanonicalMapping
