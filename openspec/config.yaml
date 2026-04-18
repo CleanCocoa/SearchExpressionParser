@@ -1,20 +1,28 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Domain: SearchExpressionParser — a Swift library that parses user search
+  queries into a boolean expression tree (AND / OR / NOT, quoted phrases,
+  parenthesized grouping) and supports negation-normal-form rewriting and
+  phrase extraction.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  Tech stack: Swift 6.2, macOS 13+, Swift Package Manager, XCTest.
+  No external dependencies; pure standard library.
+
+  Workflow: TDD (red/green). Commits are small and logical.
+  Changes flow through OpenSpec: proposal → (design if non-trivial) →
+  specs → tasks → implementation.
+
+rules:
+  proposal:
+    - "State the motivation in a Why section; list user-visible changes in What Changes; call out breaking changes and API impact in Impact."
+    - "Keep proposals concise (≈300–500 words). Defer implementation detail to design.md."
+  design:
+    - "Include only when the change has non-obvious trade-offs, touches multiple specs, or affects public API shape."
+    - "Use sections — Context, Goals / Non-Goals, Decisions, Risks & Trade-offs. Mention the test strategy."
+  specs:
+    - "One requirement per subsection. Each requirement must have at least one Scenario in Given / When / Then form."
+    - "Reference existing specs under openspec/specs/ before introducing new capability names; prefer extending an existing spec over creating a parallel one."
+  tasks:
+    - "Numbered checklist. Sub-tasks nested under their parent. Order tasks so each one corresponds to a small, logical commit."
+    - "Tasks must include writing failing tests before implementation (red / green TDD). Mark N/A tasks with strikethrough and a reason."
