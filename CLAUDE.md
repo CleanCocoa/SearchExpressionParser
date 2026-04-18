@@ -1,0 +1,4 @@
+- First, run the tests.
+- Use red/green TDD.
+- Use OpenSpec skills and workflows for changes. /opsx:*
+- Create git commits as small as possible and logical. /commit
