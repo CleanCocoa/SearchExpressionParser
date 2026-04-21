@@ -68,12 +68,13 @@ class StackOverflowTests: XCTestCase {
     func testPerformance_ParseAndEval1000Tokens() {
         let input = implicitANDWords(count: 1000)
         let expr = try! Parser.parse(searchString: input)
+        let evaluator = StringContainmentEvaluator("hello world")
         measure {
-            _ = expr.isSatisfied(by: "hello world")
+            _ = evaluate(expr, with: evaluator)
         }
     }
 
-    // MARK: - Vector 7: Evaluate deep trees with isSatisfied
+    // MARK: - Vector 7: Evaluate deep trees
 
     func testEvalImplicitAND_100()   { tryParseAndEval(implicitANDWords(count: 100)) }
     func testEvalImplicitAND_500()   { tryParseAndEval(implicitANDWords(count: 500)) }
@@ -82,40 +83,16 @@ class StackOverflowTests: XCTestCase {
     func testEvalImplicitAND_5000()  { tryParseAndEval(implicitANDWords(count: 5000)) }
     func testEvalImplicitAND_10000() { tryParseAndEval(implicitANDWords(count: 10000)) }
 
-    // MARK: - Vector 8: Extract phrases from deep trees
-
-    func testPhrasesImplicitAND_100()   { tryParseAndPhrases(implicitANDWords(count: 100)) }
-    func testPhrasesImplicitAND_500()   { tryParseAndPhrases(implicitANDWords(count: 500)) }
-    func testPhrasesImplicitAND_1000()  { tryParseAndPhrases(implicitANDWords(count: 1000)) }
-    func testPhrasesImplicitAND_2000()  { tryParseAndPhrases(implicitANDWords(count: 2000)) }
-    func testPhrasesImplicitAND_5000()  { tryParseAndPhrases(implicitANDWords(count: 5000)) }
-    func testPhrasesImplicitAND_10000() { tryParseAndPhrases(implicitANDWords(count: 10000)) }
-
-    // MARK: - Vector 9: Phrase ordering
-
-    /// @spec iterative-phrases/left-to-right-phrase-ordering/nested-or-preserves-order
-    func testPhrasesOrder_NestedOr() {
-        let tree = OrNode(ContainsNode("x"), OrNode(ContainsNode("y"), ContainsNode("z")))
-        XCTAssertEqual(tree.phrases, ["x", "y", "z"])
-    }
-
-    /// @spec iterative-phrases/iterative-phrases-produces-identical-output-to-recursive-phrases/mixed-andor-tree-preserves-order
-    func testPhrasesOrder_NestedAnd() {
-        let tree = AndNode(AndNode(ContainsNode("a"), ContainsNode("b")), ContainsNode("c"))
-        XCTAssertEqual(tree.phrases, ["a", "b", "c"])
-    }
-
-    // MARK: - Vector 10: Normalize deep trees with pushNegation
+    // MARK: - Vector 10: Normalize deep trees
 
     /// @spec iterative-push-negation/no-depth-limit/normalize-10000-deep-tree-without-error
     func testNormalizePushNegation_10000() {
-        var deep: ContainmentEvaluator.Evaluable = ContainsNode("x")
+        var deep: SearchExpressionParser.Expression = .contains("x")
         for _ in 0..<10000 {
-            deep = AndNode(deep, ContainsNode("y"))
+            deep = .and(deep, .contains("y"))
         }
-        deep = NotNode(deep)
-        let evaluator = ContainmentEvaluator(evaluable: deep)
-        let _ = evaluator.normalizedEvaluable()
+        deep = .not(deep)
+        let _ = normalize(deep)
     }
 
     // MARK: - Input Generators
@@ -155,7 +132,7 @@ class StackOverflowTests: XCTestCase {
     private func tryParse(_ input: String, file: StaticString = #filePath, line: UInt = #line) {
         do {
             let expression = try Parser.parse(searchString: input)
-            XCTAssertFalse(expression is AnythingNode, "Unexpected AnythingNode for non-empty input", file: file, line: line)
+            XCTAssertNotEqual(expression, .anything, "Unexpected .anything for non-empty input", file: file, line: line)
         } catch {
             XCTFail("Parse threw: \(error)", file: file, line: line)
         }
@@ -168,18 +145,7 @@ class StackOverflowTests: XCTestCase {
     private func tryParseAndEval(_ input: String, file: StaticString = #filePath, line: UInt = #line) {
         do {
             let expression = try Parser.parse(searchString: input)
-            _ = expression.isSatisfied(by: "hello world")
-        } catch {
-            XCTFail("Parse threw: \(error)", file: file, line: line)
-        }
-    }
-
-    private func tryParseAndPhrases(_ input: String, file: StaticString = #filePath, line: UInt = #line) {
-        do {
-            let expression = try Parser.parse(searchString: input)
-            if let evaluable = expression as? ContainmentEvaluator.Evaluable {
-                _ = ContainmentEvaluator(evaluable: evaluable).phrases()
-            }
+            _ = evaluate(expression, with: StringContainmentEvaluator("hello world"))
         } catch {
             XCTFail("Parse threw: \(error)", file: file, line: line)
         }
