@@ -1,0 +1,61 @@
+## MODIFIED Requirements
+
+### Requirement: Non-NOT nodes returned unchanged
+
+The `normalize` free function SHALL return any expression that is not `.not` unchanged.
+
+#### Scenario: Leaf nodes pass through
+
+- **GIVEN** an `.anything` or `.contains` expression
+- **WHEN** `normalize` is called
+- **THEN** the original expression is returned unchanged
+
+### Requirement: NOT over AND applies De Morgan's law
+
+The `normalize` function SHALL transform `.not(.and(a, b))` into `.or(.not(a), .not(b))`, recursively normalizing each operand.
+
+#### Scenario: NOT wrapping an AND of two leaf nodes
+
+- **GIVEN** an expression `.not(.and(.contains("x"), .contains("y")))`
+- **WHEN** `normalize` is called
+- **THEN** the result is `.or(.not(.contains("x")), .not(.contains("y")))`
+
+### Requirement: NOT over OR applies De Morgan's law
+
+The `normalize` function SHALL transform `.not(.or(a, b))` into `.and(.not(a), .not(b))`, recursively normalizing each operand.
+
+#### Scenario: NOT wrapping an OR of two leaf nodes
+
+- **GIVEN** an expression `.not(.or(.contains("x"), .contains("y")))`
+- **WHEN** `normalize` is called
+- **THEN** the result is `.and(.not(.contains("x")), .not(.contains("y")))`
+
+### Requirement: NOT over leaf nodes preserved
+
+The `normalize` function SHALL return `.not(leaf)` unchanged when the inner expression is neither `.and` nor `.or`.
+
+#### Scenario: NOT wrapping a contains
+
+- **GIVEN** an expression `.not(.contains("x"))`
+- **WHEN** `normalize` is called
+- **THEN** the result is `.not(.contains("x"))` unchanged
+
+### Requirement: Multi-level normalization through arbitrary nesting
+
+The `normalize` function SHALL recursively apply De Morgan's laws through multiple levels of nesting until all negations reach leaf nodes.
+
+#### Scenario: Two levels of nesting
+
+- **GIVEN** an expression `.not(.and(.or(.contains("a"), .contains("b")), .and(.contains("c"), .contains("d"))))`
+- **WHEN** `normalize` is called
+- **THEN** the result is `.or(.and(.not(.contains("a")), .not(.contains("b"))), .or(.not(.contains("c")), .not(.contains("d"))))`
+
+## REMOVED Requirements
+
+### Requirement: Recursion depth guard
+**Reason**: `ContainmentEvaluator` is removed. The new `normalize` free function uses iterative processing and has no recursion limit parameter.
+**Migration**: Call `normalize(expression)` directly. No depth limit needed.
+
+### Requirement: Phrases extraction excludes negated terms
+**Reason**: `ContainmentEvaluator.phrases()` is removed. Phrase extraction will be re-introduced as `PhraseExtractor: ExpressionEvaluator` in a subsequent change.
+**Migration**: Use `PhraseExtractor` evaluator (introduced in a later change).

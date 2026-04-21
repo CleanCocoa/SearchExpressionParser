@@ -23,7 +23,7 @@ public enum Expression: Sendable, Equatable {
 }
 ```
 
-No evaluation methods on the type. The tree is inert, exhaustive, compiler-checked. `Sendable` and `Equatable` conformance are derived automatically.
+No evaluation methods on the type. The tree is inert, exhaustive, compiler-checked. `Sendable` and `Equatable` conformance are derived automatically. `Expression` also conforms to `CustomStringConvertible`; the output omits `cString` arrays for readability: `.and(.contains("a"), .not(.contains("b")))`.
 
 The `contains` case carries both the original `string` and the precomputed `cString` (lowercased, precomposed UTF-8) for fast `strstr`-based matching. The `cStringFactory` customization point is retained, moved to the parser or a static function on `Expression`.
 
@@ -53,6 +53,8 @@ public protocol ExpressionEvaluator {
 
 Every method is required. No `default` cases, no silent swallowing of unknown node types. When a new leaf type is added in a future major version, every evaluator is forced to handle it.
 
+`any ExpressionEvaluator` cannot be used as an existential due to the associated type. Callers use the generic `evaluate(_:with:)` function which takes a concrete type parameter.
+
 ### Boolean Defaults
 
 For the common case of `Result == Bool`, protocol extensions provide the structural combinators:
@@ -79,7 +81,7 @@ public func evaluate<E: ExpressionEvaluator>(
 ) -> E.Result
 ```
 
-Implemented iteratively with a stack (like today's `iterativeIsSatisfied`), preserving short-circuit behavior for AND/OR.
+Implemented iteratively with a stack (like today's `iterativeIsSatisfied`), preserving short-circuit behavior for AND/OR. Short-circuit applies only when `Result == Bool` via the boolean overload; non-Bool evaluators (e.g. `PhraseExtractor`) always evaluate both branches.
 
 ## Built-in Evaluators
 
@@ -127,7 +129,7 @@ public struct PhraseExtractor: ExpressionEvaluator {
 }
 ```
 
-Intended to be used after normalization: `normalize` then `PhraseExtractor`.
+Intended to be used after normalization: `normalize` then `PhraseExtractor`. In practice, `PhraseExtractor` produces identical results with or without prior normalization: `evaluateNot` maps any `[String]` to `[]` regardless of tree shape, so De Morgan's rewrites do not change the output. The "use after normalization" guidance is for conceptual clarity, not correctness.
 
 ## Tree Transform: Normalization
 
@@ -166,6 +168,13 @@ The tokenizer gains key-value token recognition per FR-001 from v2.md:
 - `key:"multi word"` -> key-value token with quoted value
 - `\key:value` -> escaped, produces `.contains("key:value")`
 - `key :value` (space before colon) -> two separate tokens
+
+Edge cases:
+- `key:` (no value) -> WordExtractor, `.contains("key:")`
+- `key:""` (empty quoted value) -> valid, `.keyValue("key", "")`
+- lone `:` -> WordExtractor, `.contains(":")`
+- `123:value` (numeric key) -> valid, `.keyValue("123", "value")` (word chars include digits)
+- `:value` (no key) -> WordExtractor, `.contains(":value")`
 
 The parser produces `.keyValue(key:value:)` for key-value tokens and `.contains(string:cString:)` for plain words/phrases, as today.
 
@@ -254,6 +263,10 @@ let matches = evaluate(expression, with: evaluator)
 ```
 
 Three leaf methods instead of a full tree walk. AND/OR/NOT handled by the boolean protocol extension.
+
+## Breaking Changes
+
+v1 treated `foo:bar` as `ContainsNode("foo:bar")`. v2 parses it as `.keyValue("foo", "bar")`. Callers who search for a literal colon must escape with a backslash: `\foo:bar`.
 
 ## Versioning
 
