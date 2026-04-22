@@ -108,6 +108,9 @@ public struct Parser {
             throw ParseError.expectedTokenAtExpressionStart
         }
         tokenBuffer.consume()
+        if let kv = current as? KeyValueToken {
+            return .keyValue(key: kv.key, value: kv.value)
+        }
         return .contains(current.string)
     }
 
