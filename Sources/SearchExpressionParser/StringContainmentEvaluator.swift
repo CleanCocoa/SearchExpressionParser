@@ -8,10 +8,7 @@ public struct StringContainmentEvaluator: ExpressionEvaluator {
 
     public init(_ haystack: String) {
         self.haystack = haystack
-        self.haystackCString = haystack
-            .precomposedStringWithCanonicalMapping
-            .lowercased()
-            .cString(using: .utf8) ?? []
+        self.haystackCString = Expression.cStringFactory(haystack)
     }
 
     public func evaluateContains(_ string: String, cString needle: Expression.CString) -> Bool {
