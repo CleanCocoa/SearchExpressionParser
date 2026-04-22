@@ -536,4 +536,86 @@ class TokenizerTests: XCTestCase {
         XCTAssertEqual(tokens, [Word("so"), Word("this"), BinaryOperator.and, UnaryOperator.bang, Word("that"), OpeningParens(), Word("or"), BinaryOperator.or, UnaryOperator.not, Word("so"), ClosingParens(), Word("is"), Word("called"), Phrase("  another \" hope\"   "), Word("where"), Word("you"), Word("come"), Word("from!")])
 
     }
+
+
+    // MARK: - Key-Value tokens
+
+    /// @spec keyvalue-tokenization/basic-key-value-recognition/simple-key-value
+    func testTokens_KeyValue_Simple() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "tag:bar").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [KeyValueToken(key: "tag", value: "bar")])
+    }
+
+    /// @spec keyvalue-tokenization/basic-key-value-recognition/key-value-in-expression
+    func testTokens_KeyValue_InExpression() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "foo tag:bar").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("foo"), KeyValueToken(key: "tag", value: "bar")])
+    }
+
+    /// @spec keyvalue-tokenization/quoted-key-value-recognition/quoted-value
+    func testTokens_KeyValue_QuotedValue() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "tag:\"hello world\"").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [KeyValueToken(key: "tag", value: "hello world")])
+    }
+
+    /// @spec keyvalue-tokenization/quoted-key-value-recognition/quoted-value-with-escape
+    func testTokens_KeyValue_QuotedValueWithEscape() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "tag:\"hello \\\"world\\\"\"").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [KeyValueToken(key: "tag", value: "hello \"world\"")])
+    }
+
+    /// @spec keyvalue-tokenization/escaped-key-value-produces-word/backslash-escaped-key-value
+    func testTokens_KeyValue_EscapedProducesWord() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "\\tag:bar").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("tag:bar")])
+    }
+
+    /// @spec keyvalue-tokenization/space-before-colon-produces-separate-tokens/space-before-colon
+    func testTokens_KeyValue_SpaceBeforeColon_ProducesSeparateTokens() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "key :value").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("key"), Word(":value")])
+    }
+
+    /// @spec keyvalue-tokenization/multi-colon-key-value/multiple-colons
+    func testTokens_KeyValue_MultiColon() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "url:http://example.com").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [KeyValueToken(key: "url", value: "http://example.com")])
+    }
+
+    func testTokens_KeyValue_NoValue_ProducesWord() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "key:").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("key:")])
+    }
+
+    func testTokens_KeyValue_EmptyQuotedValue_ProducesKeyValue() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "key:\"\"").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [KeyValueToken(key: "key", value: "")])
+    }
+
+    func testTokens_KeyValue_LoneColon_ProducesWord() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: ":").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word(":")])
+    }
+
+    func testTokens_KeyValue_NumericKey_ProducesWord() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: "123:value").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word("123:value")])
+    }
+
+    func testTokens_KeyValue_NoKey_ProducesWord() {
+        guard let tokens = XCTAssertNoThrows(try Tokenizer(searchString: ":value").tokens()) else { return }
+
+        XCTAssertEqual(tokens, [Word(":value")])
+    }
 }
