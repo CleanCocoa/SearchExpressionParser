@@ -108,7 +108,7 @@ public func evaluate<E: ExpressionEvaluator>(_ expression: Expression, with eval
     return values.last!
 }
 
-private indirect enum EvalFrame<Result> {
+private enum EvalFrame<Result> {
     case push(Expression)
     case applyNot
     case applyAnd(Expression)
@@ -117,7 +117,7 @@ private indirect enum EvalFrame<Result> {
     case applyOr2(Result)
 }
 
-private indirect enum BoolEvalFrame {
+private enum BoolEvalFrame {
     case push(Expression)
     case applyNot
     case applyAnd(Expression)
