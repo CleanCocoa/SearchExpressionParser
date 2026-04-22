@@ -105,7 +105,7 @@ public func evaluate<E: ExpressionEvaluator>(_ expression: Expression, with eval
         }
     }
 
-    return values.last ?? true
+    return values.last!
 }
 
 private indirect enum EvalFrame<Result> {
