@@ -1,11 +1,11 @@
 ## 1. Expression Enum Extension
 
-- [ ] 1.1 Update any exhaustive switches on `Expression` (evaluate function, etc.) for the `.keyValue` case added in expression-enum
+- [x] 1.1 Update any exhaustive switches on `Expression` (evaluate function, etc.) for the `.keyValue` case added in expression-enum
 
 ## 2. Key-Value Token Type
 
-- [ ] 2.1 Write tests for `KeyValue` token: `key`, `value`, `string` properties
-- [ ] 2.2 Add `KeyValue` struct conforming to `Token`
+- [x] 2.1 Write tests for `KeyValue` token: `key`, `value`, `string` properties
+- [x] 2.2 Add `KeyValue` struct conforming to `Token`
 
 ## 3. Key-Value Tokenizer Extractor
 

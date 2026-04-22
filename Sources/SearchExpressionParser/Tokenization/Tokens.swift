@@ -44,3 +44,17 @@ public enum UnaryOperator: Token, Sendable {
         }
     }
 }
+
+public struct KeyValueToken: Token {
+    public let key: String
+    public let value: String
+
+    public init(key: String, value: String) {
+        self.key = key
+        self.value = value
+    }
+
+    public var string: String {
+        return "\(key):\(value)"
+    }
+}
