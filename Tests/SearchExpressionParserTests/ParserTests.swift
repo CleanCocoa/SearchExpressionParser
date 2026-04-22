@@ -277,4 +277,86 @@ class ParserTests: XCTestCase {
                 .and(.contains("("), .contains(")"))))
     }
 
+
+    // MARK: - Key-Value parsing
+
+    /// @spec keyvalue-parsing/parser-produces-keyvalue-nodes/simple-key-value-parses-to-keyvalue-node
+    func testExpression_KeyValue_Simple() {
+        let tokens: [Token] = [KeyValueToken(key: "tag", value: "bar")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+        XCTAssertEqual(expression, .keyValue(key: "tag", value: "bar"))
+    }
+
+    /// @spec keyvalue-parsing/parser-produces-keyvalue-nodes/key-value-with-quoted-value
+    func testExpression_KeyValue_QuotedValue() {
+        let tokens: [Token] = [KeyValueToken(key: "title", value: "hello world")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+        XCTAssertEqual(expression, .keyValue(key: "title", value: "hello world"))
+    }
+
+    /// @spec keyvalue-parsing/key-value-in-boolean-expressions/not-key-value
+    func testExpression_KeyValue_NOT() {
+        let tokens: [Token] = [UnaryOperator.not, KeyValueToken(key: "tag", value: "bar")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+        XCTAssertEqual(expression, .not(.keyValue(key: "tag", value: "bar")))
+    }
+
+    /// @spec keyvalue-parsing/key-value-in-boolean-expressions/key-value-or-key-value
+    func testExpression_KeyValue_OR() {
+        let tokens: [Token] = [
+            KeyValueToken(key: "tag", value: "foo"), BinaryOperator.or,
+            KeyValueToken(key: "tag", value: "bar")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+        XCTAssertEqual(expression, .or(.keyValue(key: "tag", value: "foo"), .keyValue(key: "tag", value: "bar")))
+    }
+
+    /// @spec keyvalue-parsing/key-value-in-boolean-expressions/mixed-contains-and-key-value-with-and
+    func testExpression_KeyValue_MixedAND() {
+        let tokens: [Token] = [Word("hello"), KeyValueToken(key: "tag", value: "bar")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+        XCTAssertEqual(expression, .and(.contains("hello"), .keyValue(key: "tag", value: "bar")))
+    }
+
+    /// @spec keyvalue-parsing/key-value-in-boolean-expressions/parenthesized-key-value
+    func testExpression_KeyValue_Parenthesized() {
+        let tokens: [Token] = [
+            Word("hello"),
+            OpeningParens(),
+            KeyValueToken(key: "tag", value: "a"), BinaryOperator.and,
+            KeyValueToken(key: "tag", value: "b"),
+            ClosingParens()]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+        XCTAssertEqual(
+            expression,
+            .and(.contains("hello"), .and(.keyValue(key: "tag", value: "a"), .keyValue(key: "tag", value: "b"))))
+    }
+
+    /// @spec keyvalue-parsing/escaped-key-value-produces-contains/escaped-key-value
+    func testExpression_KeyValue_EscapedProducesContains() {
+        let tokens: [Token] = [Word("tag:bar")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+        XCTAssertEqual(expression, .contains("tag:bar"))
+    }
+
+    /// @spec keyvalue-parsing/backward-compatibility/plain-words-unchanged
+    func testExpression_KeyValue_BackwardCompat_PlainWords() {
+        let tokens: [Token] = [Word("foo"), Word("bar")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+        XCTAssertEqual(expression, .and(.contains("foo"), .contains("bar")))
+    }
+
+    /// @spec keyvalue-parsing/backward-compatibility/operators-unchanged
+    func testExpression_KeyValue_BackwardCompat_Operators() {
+        let tokens: [Token] = [
+            Word("foo"), BinaryOperator.and,
+            Word("bar"), BinaryOperator.or,
+            Word("baz")]
+        guard let expression = XCTAssertNoThrows(try Parser(tokens: tokens).expression()) else { return }
+        XCTAssertEqual(
+            expression,
+            .and(
+                .contains("foo"),
+                .or(.contains("bar"), .contains("baz"))))
+    }
+
 }

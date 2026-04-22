@@ -20,8 +20,8 @@
 
 ## 4. Parser Key-Value Handling
 
-- [ ] 4.1 Write parser tests for simple key-value: `tag:bar` -> `.keyValue`
-- [ ] 4.2 Write parser tests for key-value in boolean expressions: NOT, OR, AND, parentheses
-- [ ] 4.3 Write parser tests for escaped key-value: `\tag:bar` -> `.contains`
-- [ ] 4.4 Write parser tests for backward compatibility: plain word queries unchanged
+- [x] 4.1 Write parser tests for simple key-value: `tag:bar` -> `.keyValue`
+- [x] 4.2 Write parser tests for key-value in boolean expressions: NOT, OR, AND, parentheses
+- [x] 4.3 Write parser tests for escaped key-value: `\tag:bar` -> `.contains`
+- [x] 4.4 Write parser tests for backward compatibility: plain word queries unchanged
 - [ ] 4.5 Update parser to handle `KeyValue` tokens as primary expressions producing `.keyValue`
