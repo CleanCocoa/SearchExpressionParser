@@ -14,6 +14,7 @@ public struct Tokenizer {
             AndExtractor(),
             OrExtractor(),
 
+            KeyValueExtractor(),
             WordExtractor() // Wildcard extractor comes last
         ]
     }
@@ -82,6 +83,7 @@ internal struct TokenizerError: Error {
         case cannotExtractQuotationMark
         case cannotExtractUnaryOperator(UnaryOperator)
         case cannotExtractBinaryOperator(BinaryOperator)
+        case cannotExtractKeyValue
     }
 
     let kind: Kind
