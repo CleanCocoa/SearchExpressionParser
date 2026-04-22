@@ -15,10 +15,8 @@ public struct StringContainmentEvaluator: ExpressionEvaluator {
     }
 
     public func evaluateContains(_ string: String, cString needle: Expression.CString) -> Bool {
-        guard !needle.isEmpty || needle.count == 1 else { return false }
         if needle.isEmpty { return false }
-        let needleIsEmpty = needle.count == 1 && needle[0] == 0
-        if needleIsEmpty { return false }
+        if needle.count == 1 && needle[0] == 0 { return false }
         return haystackCString.withUnsafeBufferPointer { haystackBuf in
             needle.withUnsafeBufferPointer { needleBuf in
                 guard let h = haystackBuf.baseAddress, let n = needleBuf.baseAddress else { return false }
