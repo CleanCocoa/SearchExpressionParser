@@ -58,7 +58,7 @@
 - [ ] 8.1 Write tests for `normalize(_:)` free function using `Expression` enum
 - [x] 8.2 Convert `pushNegationIteratively` to a public `normalize(_: Expression) -> Expression` free function using enum pattern matching
 - [x] 8.3 Remove old `ContainmentEvaluator.normalizedEvaluable()` method (if not already removed in step 6.5)
-- [ ] 8.4 Write test verifying `normalize(_:)` passes `.keyValue` through unchanged
+- [x] 8.4 Write test verifying `normalize(_:)` passes `.keyValue` through unchanged
 
 ## 9. CustomStringConvertible
 
