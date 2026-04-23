@@ -1,9 +1,15 @@
 ---
-name: "spec-coverage"
+name: spec-coverage
 description: "Verify that OpenSpec scenarios are covered by annotated tests. Use from subagents after writing tests or specs to check traceability, or to detect coverage gaps and stale annotations."
-tools: ["Bash", "Read", "Edit", "Write", "Grep", "Glob"]
+tools: 
+  - Bash
+  - Read
+  - Edit
+  - Write
+  - Grep
+  - Glob
+model: haiku
 ---
-
 You verify spec-to-test coverage by delegating to the `/spec-coverage` skill.
 
 ## How to invoke
