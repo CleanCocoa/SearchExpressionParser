@@ -1,6 +1,6 @@
 # Expression Data Type Specification
 
-> Synced from change expression-enum on 2026-04-22
+> Synced from change keyvalue-tokenization-parsing on 2026-04-23
 
 ## Purpose
 
@@ -10,12 +10,12 @@
 
 ### Requirement: Expression enum type
 
-The system SHALL represent parsed search expressions as a single `enum Expression` with cases: `.anything`, `.contains(string: String, cString: [CChar])`, `.not(Expression)`, `.and(Expression, Expression)`, `.or(Expression, Expression)`. The `.and` and `.or` cases SHALL be `indirect`. The enum SHALL conform to `Sendable` and `Equatable` with compiler-derived conformances.
+The system SHALL represent parsed search expressions as a single `enum Expression` with cases: `.anything`, `.contains(string: String, cString: [CChar])`, `.keyValue(key: String, value: String)`, `.not(Expression)`, `.and(Expression, Expression)`, `.or(Expression, Expression)`. The `.and` and `.or` cases SHALL be `indirect`. The enum SHALL conform to `Sendable` and `Equatable` with compiler-derived conformances.
 
 #### Scenario: Enum cases are exhaustive for current node types
 
 - **WHEN** a consumer switches on an `Expression` value
-- **THEN** the compiler SHALL require handling `.anything`, `.contains`, `.not`, `.and`, and `.or`
+- **THEN** the compiler SHALL require handling `.anything`, `.contains`, `.keyValue`, `.not`, `.and`, and `.or`
 
 #### Scenario: Equatable comparison of identical trees
 
@@ -31,6 +31,16 @@ The system SHALL represent parsed search expressions as a single `enum Expressio
 
 - **WHEN** an `Expression` value is passed across actor or concurrency boundaries
 - **THEN** the compiler SHALL accept it without warnings
+
+#### Scenario: KeyValue equality
+
+- **WHEN** two `.keyValue` expressions have the same key and value
+- **THEN** they SHALL compare as equal via `==`
+
+#### Scenario: KeyValue with different keys
+
+- **WHEN** two `.keyValue` expressions have different keys
+- **THEN** they SHALL compare as not equal via `==`
 
 ### Requirement: CString typealias
 
