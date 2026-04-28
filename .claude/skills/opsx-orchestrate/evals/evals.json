@@ -6,6 +6,17 @@
       "name": "end-to-end-builtin-evaluators",
       "prompt": "Orchestrate end-to-end implementation of OpenSpec change `builtin-evaluators`. Drive it from current state through implementation, parallel review, delta-spec sync, and archive. You have authority to: pick the only available change without asking, sync delta specs without asking, archive without asking, but do NOT push to remote. The user is unavailable to answer mid-run prompts — make all routine decisions yourself.",
       "expected_output": "Final repo state shows: (a) commits implementing all tasks, (b) all tasks ticked in tasks.md, (c) delta specs synced into openspec/specs/, (d) change moved to openspec/changes/archive/YYYY-MM-DD-builtin-evaluators/, (e) swift test green, (f) no push to remote.",
+      "assertions": [
+        "Change is archived under openspec/changes/archive/2026-04-28-builtin-evaluators/",
+        "swift test reports green (zero failures) at end of run",
+        "All tasks in tasks.md are ticked (task_count_ticked == task_count_total)",
+        "Delta specs are synced into openspec/specs/phrase-extractor/",
+        "Did not push to remote (pushed_to_remote is false)",
+        "At least one implementer subagent was spawned (implementer_passes >= 1)",
+        "At least one reviewer round was run (reviewer_rounds >= 1)",
+        "Orchestrator did not author source code itself; orchestrator_report.md describes spawning the implementer for code changes",
+        "Orchestrator ran 4 reviewers in parallel (spec drift, code quality, test quality, security) per the skill — verifiable in orchestrator_report.md"
+      ],
       "files": []
     }
   ]
