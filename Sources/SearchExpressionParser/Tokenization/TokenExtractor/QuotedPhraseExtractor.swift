@@ -1,6 +1,6 @@
 //  Copyright © 2018 Christian Tietze. All rights reserved. Distributed under the MIT License.
 
-internal struct PhraseExtractor: TokenExtractor {
+internal struct QuotedPhraseExtractor: TokenExtractor {
 
     func matchesPreconditions(_ buffer: TokenCharacterBuffer) -> Bool {
         return buffer.peekNext() == "\""
