@@ -10,9 +10,9 @@
 - [x] 2.4 Update the call site in `Sources/SearchExpressionParser/Tokenization/Tokenizer.swift` extractor priority list: `PhraseExtractor()` → `QuotedPhraseExtractor()`.
 - [x] 2.5 Update `SearchExpressionParser.xcodeproj/project.pbxproj` to reference the new filename and type identifier.
 - [x] 2.6 Run `rg PhraseExtractor` repo-wide and confirm remaining hits are only: (a) inside `openspec/specs/**` Technical Notes / spec-gen headers (out of scope), (b) inside `openspec/changes/**` (proposals / specs / tasks), (c) inside `docs/**` historical documents.
-- [ ] 2.7 `swift build` clean. `swift test` reports 241/241 green. Commit: `refactor: rename internal PhraseExtractor to QuotedPhraseExtractor`.
+- [x] 2.7 `swift build` clean. `swift test` reports 241/241 green. Commit: `refactor: rename internal PhraseExtractor to QuotedPhraseExtractor`.
 
 ## 3. Verify
 
-- [ ] 3.1 Run `openspec validate rename-quoted-phrase-extractor --strict`; expect "is valid".
-- [ ] 3.2 Final `swift test` confirming 241/241 still green.
+- [x] 3.1 Run `openspec validate rename-quoted-phrase-extractor --strict`; expect "is valid".
+- [x] 3.2 Final `swift test` confirming 241/241 still green.
