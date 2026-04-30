@@ -5,12 +5,6 @@ class PhraseExtractorTests: XCTestCase {
 
     // MARK: 1.1 — Leaf methods
 
-    /// @spec phrase-extractor/conformance/conforms-to-expression-evaluator
-    func testConformance() {
-        let extractor = PhraseExtractor()
-        XCTAssertNotNil(extractor)
-    }
-
     /// @spec phrase-extractor/evaluate-contains/single-phrase
     func testEvaluateContains_returnsSinglePhrase() {
         let extractor = PhraseExtractor()
