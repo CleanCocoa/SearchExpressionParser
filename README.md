@@ -1,69 +1,58 @@
 # SearchExpressionParser
 
-![Swift 5.0](https://img.shields.io/badge/Swift-5.0-blue.svg?style=flat)
+![Swift 6.2](https://img.shields.io/badge/Swift-6.2-blue.svg?style=flat)
 ![Version](https://img.shields.io/github/tag/CleanCocoa/SearchExpressionParser.svg?style=flat)
 ![License](https://img.shields.io/github/license/CleanCocoa/SearchExpressionParser.svg?style=flat)
-![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg?style=flat)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+![Platform](https://img.shields.io/badge/platform-macOS%2013%2B-lightgrey.svg?style=flat)
 
-Parses search strings (as in: what you put into a search engine) into evaluable expressions.
+Parses search strings (as in: what you put into a search engine) into evaluable expression trees.
 
 ## Parsing
 
-You call the `Parser.parse(searchString:)`. This returns a tree of the parsed expression combinations. You can ask the `Expression` object if it is matches a given haystack, for example:
+Call `Parser.parse(searchString:)` to get an `Expression` tree, then evaluate it with an `ExpressionEvaluator`:
 
 ```swift
 import SearchExpressionParser
-guard let expr = try? Parser.parse(searchString: "Hello") else { fatalError() }
-expr.isSatisfied(by: "Hello World!") // true
+
+let expr = try Parser.parse(searchString: "Hello")
+let result = evaluate(expr, with: StringContainmentEvaluator("Hello World!"))
+// result == true
 ```
 
-Empty search strings evaluate to a wildcard matching anything.
+Empty search strings parse to `.anything` and match everything.
 
-### Efficient full-text search
+### Built-in full-text matching
 
-To use search expressions effectively in an app, I found it beneficial to operate on an all-lowercase representation of the text and use C's `strstr`.
-
-So in a note-taking app, for example, you should consider lowercasing your notes in-memory and then use C-String comparison for the expressions.
-
-First, make your text implement the `CStringExpressionSatisfiable` protocol:
+`StringContainmentEvaluator` is the default full-text backend. It lowercases and canonicalizes the haystack and uses C's `strstr` for substring checks — much faster than `String.contains`, and handles emoji correctly:
 
 ```swift
-struct Note {
-    let text: String
-    private let cString: [CChar]
-
-    init(text: String) {
-        self.text = text
-        self.cString = text
-            // Favor simple over grapheme cluster characters
-            .precomposedStringWithCanonicalMapping
-            .cString(using: .utf8)!
-    }
-}
-
-import SearchExpressionParser
-
-extension Note: CStringExpressionSatisfiable {
-    func matches(needle: [CChar]) -> Bool {
-        return strstr(self.cString, needle) != nil
-    }
-}
+let evaluator = StringContainmentEvaluator(warAndPeace.text)
+let protagonist = try Parser.parse(searchString: "\"Pierre Bezukhov\" OR \"Pyotr Kirillovich\"")
+evaluate(protagonist, with: evaluator) // true
 ```
 
-Then pass this object to the expression.
+For custom matching (e.g. searching multiple fields, hitting an external index), conform to `ExpressionEvaluator`:
 
 ```swift
-let warAndPeace = Note(String(contentsOf: "books/Tolstoy/War-and-Peace.txt"))
-let protagonist = try! Parser.parse(searchString: "\"Pierre Bezukhov\" OR \"Pyotr Kirillovich\"")
-protagonist.isSatisfied(by: warAndPeace) // true
-```
+struct MyEvaluator: ExpressionEvaluator {
+    typealias Result = Bool
+    let note: Note
 
-This sadly puts the burden of implementing the matching algorithm on your side, but this is by design so you keep a C-String around instead of relying on the framework to convert the text for you on the fly -- because that's be useless. The speed gain is well worth the couple lines of code compared to regular `String.contains` matching, which even gets slower when Emoji are involved.
+    func evaluateContains(_ string: String, cString: Expression.CString) -> Bool {
+        note.text.localizedCaseInsensitiveContains(string)
+    }
+    func evaluateKeyValue(key: String, value: String) -> Bool {
+        // Dispatch to your tag/title/link index here.
+        false
+    }
+    // evaluateAnything / evaluateAnd / evaluateOr / evaluateNot
+    // come from the protocol's default Bool implementation.
+}
+```
 
 ### Operators
 
-Operators are all caps: `AND`, `OR`, `NOT`/`!`. 
+Operators are all caps: `AND`, `OR`, `NOT`/`!`.
 
 - `foo bar baz` is equivalent to `foo AND bar AND baz`
 - `NOT b` equals `!b`
@@ -81,38 +70,59 @@ You can parenthesize expressions:
 
     !foo OR !baz AND !foo OR !bar
 
-As of yet, there is no real operator precedence implementation because the full-text search context I was using this in didn't need that.
+There is no operator precedence beyond grouping with parentheses; the full-text search context this was built for didn't need it.
 
-The `Expression` object of this nested term looks like this:
+The parsed tree for `!(foo OR (baz AND !bar))`:
 
-    // !(foo OR (baz AND !bar))
-    NotNode(
-        OrNode(lhs: ContainsNode("foo"), 
-               rhs: AndNode(lhs: ContainsNode("baz"), 
-                            rhs: NotNode(ContainsNode("bar")))))
+```swift
+.not(.or(.contains("foo"),
+         .and(.contains("baz"),
+              .not(.contains("bar")))))
+```
 
+### Key-value tokens
+
+Tokens of the form `key:value` parse into `.keyValue(key:value:)` nodes. The library recognizes the syntax but does not evaluate it — the consuming app dispatches each key to the right index (tags, titles, links, citations, ...).
+
+- `tag:bar` → `.keyValue(key: "tag", value: "bar")`
+- `title:"hello world"` → `.keyValue(key: "title", value: "hello world")` (quoted values use the same escape rules as phrase search)
+- `\tag:bar` → `.contains("tag:bar")` (escape suppresses key-value recognition)
+- `key :value` (space before colon) is two separate tokens
+
+`StringContainmentEvaluator.evaluateKeyValue` returns `false`, since key-value predicates can't be answered by string containment. Plug in your own evaluator to dispatch.
+
+For pre-flight inspection (deciding which indices to query, contextual autocomplete, etc.), use `keyValueNodes(in:)`:
+
+```swift
+let expr = try Parser.parse(searchString: "foo tag:swift title:\"hello world\"")
+keyValueNodes(in: expr)
+// [(key: "tag", value: "swift"), (key: "title", value: "hello world")]
+```
 
 ### Expressions
 
-When you call the high-level `Parser.parse(searchString:)` entry point, you get an object in return that conforms to `Expression`. 
+`Expression` is a `Sendable` enum:
 
-The `Expression` protocol is:
+```swift
+public enum Expression: Sendable, Equatable {
+    case anything
+    case contains(string: String, cString: CString)
+    indirect case not(Expression)
+    indirect case and(Expression, Expression)
+    indirect case or(Expression, Expression)
+    case keyValue(key: String, value: String)
+}
+```
 
-    public protocol Expression {
-        func isSatisfied(by satisfiable: StringExpressionSatisfiable) -> Bool
-        func isSatisfied(by satisfiable: CStringExpressionSatisfiable) -> Bool
-    }
+You walk the tree with `evaluate(_:with:)` and an `ExpressionEvaluator`. The protocol defines one method per case; default implementations exist for `Result == Bool` so most callers only implement `evaluateContains` and (optionally) `evaluateKeyValue`.
 
-You can pass the haystack to `isStatisfied`, e.g. the text you want to search.
+Cases:
 
-When the case of words doesn't matter, remember it's much faster if you make the text you want to search conform to `CStringExpressionSatisfiable` and pass _that_ in, instead. See above for details.
-
-The expressions provided are:
-
-- `AnythingNode` will match anything you put it; it's the wildcard or empty search.
-- `ContainsNode` represents check similar to `String.contains`.
-- `NotNode` wraps 1 other node and reverses the result of its outcome.
-- `AndNode` and `OrNode` both take 2 other notes and combine their results with the boolean operator equivalents.
+- `.anything` — wildcard, the empty search.
+- `.contains` — substring check; carries both the original string and a precomputed lowercased C-string.
+- `.not` — negates the wrapped expression.
+- `.and` / `.or` — boolean combinators.
+- `.keyValue` — opaque `key:value` pair for the consuming app to interpret.
 
 ## Apps that use this
 
@@ -122,4 +132,4 @@ Use this in your app? Open a PR and tell the world about it!
 
 ## License
 
-Copyright (c) 2018-2019 Christian Tietze. Distributed under the MIT License.
+Copyright (c) 2018-2026 Christian Tietze. Distributed under the MIT License.
