@@ -4,17 +4,17 @@
 
 ## Purpose
 
-The tokenizer recognizes `key:value` patterns and emits a dedicated `KeyValue` token type. Key-value tokens carry a `key` and a `value` string, support quoted values (including escaped quotes), and interoperate with the existing word/phrase/operator tokens. Backslash-escaped patterns and patterns with whitespace before the colon fall back to plain word tokens.
+The tokenizer recognizes `key:value` patterns and emits a dedicated `KeyValueToken` token type. Key-value tokens carry a `key` and a `value` string, support quoted values (including escaped quotes), and interoperate with the existing word/phrase/operator tokens. Backslash-escaped patterns and patterns with whitespace before the colon fall back to plain word tokens.
 
 ## Requirements
 
 ### Requirement: KeyValue token type
 
-The system SHALL provide a `KeyValue` token type conforming to `Token` with `key: String` and `value: String` properties.
+The system SHALL provide a `KeyValueToken` token type conforming to `Token` with `key: String` and `value: String` properties.
 
 #### Scenario: KeyValue token string representation
 
-- **WHEN** a `KeyValue` token has key `"tag"` and value `"bar"`
+- **WHEN** a `KeyValueToken` token has key `"tag"` and value `"bar"`
 - **THEN** its `string` property SHALL be `"tag:bar"`
 
 ### Requirement: Basic key-value recognition
@@ -24,12 +24,12 @@ The tokenizer SHALL recognize `key:value` patterns where the key is one or more 
 #### Scenario: Simple key-value
 
 - **WHEN** tokenizing `"tag:bar"`
-- **THEN** the result SHALL be a single `KeyValue` token with key `"tag"` and value `"bar"`
+- **THEN** the result SHALL be a single `KeyValueToken` token with key `"tag"` and value `"bar"`
 
 #### Scenario: Key-value in expression
 
 - **WHEN** tokenizing `"foo tag:bar"`
-- **THEN** the result SHALL be a `Word("foo")` token followed by a `KeyValue` token with key `"tag"` and value `"bar"`
+- **THEN** the result SHALL be a `Word("foo")` token followed by a `KeyValueToken` token with key `"tag"` and value `"bar"`
 
 ### Requirement: Quoted key-value recognition
 
@@ -38,12 +38,12 @@ The tokenizer SHALL recognize `key:"quoted value"` patterns where the value is a
 #### Scenario: Quoted value
 
 - **WHEN** tokenizing `tag:"hello world"`
-- **THEN** the result SHALL be a single `KeyValue` token with key `"tag"` and value `"hello world"`
+- **THEN** the result SHALL be a single `KeyValueToken` token with key `"tag"` and value `"hello world"`
 
 #### Scenario: Quoted value with escape
 
 - **WHEN** tokenizing `tag:"hello \"world\""`
-- **THEN** the result SHALL be a single `KeyValue` token with key `"tag"` and value `hello "world"`
+- **THEN** the result SHALL be a single `KeyValueToken` token with key `"tag"` and value `hello "world"`
 
 ### Requirement: Escaped key-value produces word
 
@@ -70,7 +70,7 @@ The tokenizer SHALL treat multi-colon patterns like `a:b:c` as key `"a"` and val
 #### Scenario: Multiple colons
 
 - **WHEN** tokenizing `"url:http://example.com"`
-- **THEN** the result SHALL be a `KeyValue` token with key `"url"` and value `"http://example.com"`
+- **THEN** the result SHALL be a `KeyValueToken` token with key `"url"` and value `"http://example.com"`
 
 ## Technical Notes
 
