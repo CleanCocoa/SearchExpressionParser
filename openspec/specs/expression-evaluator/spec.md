@@ -10,7 +10,7 @@
 
 ### Requirement: ExpressionEvaluator protocol
 
-The system SHALL provide a public `ExpressionEvaluator` protocol with `associatedtype Result` and six required methods: `evaluateContains(_ string: String, cString: [CChar]) -> Result`, `evaluateKeyValue(key: String, value: String) -> Result`, `evaluateAnything() -> Result`, `evaluateNot(_ inner: Result) -> Result`, `evaluateAnd(_ lhs: Result, _ rhs: Result) -> Result`, `evaluateOr(_ lhs: Result, _ rhs: Result) -> Result`.
+The system SHALL provide a public `ExpressionEvaluator` protocol with `associatedtype Result` and six required methods: `evaluateContains(_ string: String, cString: Expression.CString) -> Result`, `evaluateKeyValue(key: String, value: String) -> Result`, `evaluateAnything() -> Result`, `evaluateNot(_ inner: Result) -> Result`, `evaluateAnd(_ lhs: Result, _ rhs: Result) -> Result`, `evaluateOr(_ lhs: Result, _ rhs: Result) -> Result`.
 
 #### Scenario: Protocol requires all six methods
 
