@@ -9,69 +9,69 @@ The parser transforms a flat token sequence into an expression tree using recurs
 
 ## Requirements
 
-### Requirement: Empty Input Produces AnythingNode
+### Requirement: Empty Input Produces .anything
 
-The parser SHALL produce an `AnythingNode` when the token list is empty, representing a match-everything expression.
+The parser SHALL produce `.anything` when the token list is empty, representing a match-everything expression.
 
 #### Scenario: No tokens provided
 - **GIVEN** an empty token array
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AnythingNode`
+- **THEN** the result SHALL be `.anything`
 
-### Requirement: Single Token Produces ContainsNode
+### Requirement: Single Token Produces .contains
 
-The parser SHALL produce a `ContainsNode` wrapping the token's text when a single word or phrase token is provided.
+The parser SHALL produce `.contains(text)` wrapping the token's text when a single word or phrase token is provided.
 
 #### Scenario: Single phrase token
 - **GIVEN** the token list `[Phrase("foo bar")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `ContainsNode("foo bar")`
+- **THEN** the result SHALL be `.contains("foo bar")`
 
 ### Requirement: Implicit AND for Adjacent Terms
 
-The parser SHALL produce an `AndNode` joining two terms when they appear adjacently with no explicit operator between them. The parser SHALL handle arbitrarily long sequences of adjacent terms without stack overflow, using O(1) call stack depth.
+The parser SHALL produce `.and(lhs, rhs)` joining two terms when they appear adjacently with no explicit operator between them. The parser SHALL handle arbitrarily long sequences of adjacent terms without stack overflow, using O(1) call stack depth.
 
 #### Scenario: Two adjacent phrases
 - **GIVEN** the token list `[Phrase("foo"), Phrase("bar")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("foo"), ContainsNode("bar"))`
+- **THEN** the result SHALL be `.and(.contains("foo"), .contains("bar"))`
 
 #### Scenario: Three adjacent phrases are right-associative
 - **GIVEN** the token list `[Phrase("foo"), Phrase("bar"), Phrase("baz")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("foo"), AndNode(ContainsNode("bar"), ContainsNode("baz")))`
+- **THEN** the result SHALL be `.and(.contains("foo"), .and(.contains("bar"), .contains("baz")))`
 
 #### Scenario: Six adjacent phrases produce right-leaning tree
 - **GIVEN** the token list `[Phrase("1"), Phrase("2"), Phrase("3"), Phrase("4"), Phrase("5"), Phrase("6")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("1"), AndNode(ContainsNode("2"), AndNode(ContainsNode("3"), AndNode(ContainsNode("4"), AndNode(ContainsNode("5"), ContainsNode("6"))))))`
+- **THEN** the result SHALL be `.and(.contains("1"), .and(.contains("2"), .and(.contains("3"), .and(.contains("4"), .and(.contains("5"), .contains("6"))))))`
 
 #### Scenario: 10,000 adjacent phrases parse without stack overflow
 - **WHEN** the parser receives 10,000 single-character word tokens
-- **THEN** parsing SHALL complete successfully producing a right-leaning `AndNode` tree
+- **THEN** parsing SHALL complete successfully producing a right-leaning `.and` tree
 
 ### Requirement: Explicit AND Operator
 
-The parser SHALL produce an `AndNode` when two terms are connected by `BinaryOperator.and`, consuming the operator token.
+The parser SHALL produce `.and(lhs, rhs)` when two terms are connected by `BinaryOperator.and`, consuming the operator token.
 
 #### Scenario: Two phrases with explicit AND
 - **GIVEN** the token list `[Phrase("foo"), BinaryOperator.and, Phrase("bar")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("foo"), ContainsNode("bar"))`
+- **THEN** the result SHALL be `.and(.contains("foo"), .contains("bar"))`
 
 #### Scenario: Three phrases with explicit AND are right-associative
 - **GIVEN** the token list `[Phrase("foo"), AND, Phrase("bar"), AND, Phrase("baz")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("foo"), AndNode(ContainsNode("bar"), ContainsNode("baz")))`
+- **THEN** the result SHALL be `.and(.contains("foo"), .and(.contains("bar"), .contains("baz")))`
 
 ### Requirement: OR Operator
 
-The parser SHALL produce an `OrNode` when two terms are connected by `BinaryOperator.or`, consuming the operator token.
+The parser SHALL produce `.or(lhs, rhs)` when two terms are connected by `BinaryOperator.or`, consuming the operator token.
 
 #### Scenario: Two phrases with OR
 - **GIVEN** the token list `[Phrase("foo"), BinaryOperator.or, Phrase("bar")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `OrNode(ContainsNode("foo"), ContainsNode("bar"))`
+- **THEN** the result SHALL be `.or(.contains("foo"), .contains("bar"))`
 
 ### Requirement: AND and OR Have No Precedence Difference
 
@@ -80,78 +80,78 @@ AND and OR SHALL be parsed at the same precedence level. Both are right-associat
 #### Scenario: OR followed by AND
 - **GIVEN** the token list `[Phrase("foo"), OR, Phrase("bar"), AND, Phrase("baz")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `OrNode(ContainsNode("foo"), AndNode(ContainsNode("bar"), ContainsNode("baz")))`
+- **THEN** the result SHALL be `.or(.contains("foo"), .and(.contains("bar"), .contains("baz")))`
 
 #### Scenario: Implicit AND followed by OR
 - **GIVEN** the token list `[Phrase("foo"), Phrase("bar"), OR, Phrase("baz")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("foo"), OrNode(ContainsNode("bar"), ContainsNode("baz")))`
+- **THEN** the result SHALL be `.and(.contains("foo"), .or(.contains("bar"), .contains("baz")))`
 
 ### Requirement: Trailing Binary Operator Becomes Literal Text
 
-When a binary operator token appears at the end of the token list with no right-hand operand, the parser SHALL treat it as literal text by wrapping it in a `ContainsNode` and joining it with the left-hand side via `AndNode`.
+When a binary operator token appears at the end of the token list with no right-hand operand, the parser SHALL treat it as literal text by wrapping it in `.contains(...)` and joining it with the left-hand side via `.and(...)`.
 
 #### Scenario: Trailing AND
 - **GIVEN** the token list `[Phrase("foo"), BinaryOperator.and]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("foo"), ContainsNode("AND"))`
+- **THEN** the result SHALL be `.and(.contains("foo"), .contains("AND"))`
 
 #### Scenario: Trailing OR
 - **GIVEN** the token list `[Phrase("foo"), BinaryOperator.or]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("foo"), ContainsNode("OR"))`
+- **THEN** the result SHALL be `.and(.contains("foo"), .contains("OR"))`
 
 ### Requirement: Lone Binary Operator Becomes Literal Text
 
-When a binary operator token is the only token, the parser SHALL treat it as a primary and produce a `ContainsNode` with the operator's text.
+When a binary operator token is the only token, the parser SHALL treat it as a primary and produce `.contains(text)` with the operator's text.
 
 #### Scenario: Lone AND
 - **GIVEN** the token list `[BinaryOperator.and]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `ContainsNode("AND")`
+- **THEN** the result SHALL be `.contains("AND")`
 
 #### Scenario: Lone OR
 - **GIVEN** the token list `[BinaryOperator.or]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `ContainsNode("OR")`
+- **THEN** the result SHALL be `.contains("OR")`
 
 ### Requirement: Leading Binary Operator Becomes Implicit AND
 
-When a binary operator token appears at the start of the token list, the parser SHALL treat it as a literal word primary. The subsequent tokens produce the right-hand side, joined by implicit `AndNode`.
+When a binary operator token appears at the start of the token list, the parser SHALL treat it as a literal word primary. The subsequent tokens produce the right-hand side, joined by implicit `.and(...)`.
 
 #### Scenario: Leading AND before phrase
 - **GIVEN** the token list `[BinaryOperator.and, Phrase("foo")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("AND"), ContainsNode("foo"))`
+- **THEN** the result SHALL be `.and(.contains("AND"), .contains("foo"))`
 
 #### Scenario: Leading OR before phrase
 - **GIVEN** the token list `[BinaryOperator.or, Phrase("foo")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("OR"), ContainsNode("foo"))`
+- **THEN** the result SHALL be `.and(.contains("OR"), .contains("foo"))`
 
 ### Requirement: Unary NOT/Bang Binds to Immediately Following Primary
 
-The `!` and `NOT` unary operators SHALL negate only the immediately following primary expression (a single term or a parenthesized group), producing a `NotNode`. The parser SHALL handle arbitrarily long chains of consecutive negation operators without stack overflow, using O(1) call stack depth.
+The `!` and `NOT` unary operators SHALL negate only the immediately following primary expression (a single term or a parenthesized group), producing `.not(inner)`. The parser SHALL handle arbitrarily long chains of consecutive negation operators without stack overflow, using O(1) call stack depth.
 
 #### Scenario: Bang before single phrase
 - **GIVEN** the token list `[UnaryOperator.bang, Phrase("foo")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `NotNode(ContainsNode("foo"))`
+- **THEN** the result SHALL be `.not(.contains("foo"))`
 
 #### Scenario: NOT before single phrase
 - **GIVEN** the token list `[UnaryOperator.not, Phrase("foo")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `NotNode(ContainsNode("foo"))`
+- **THEN** the result SHALL be `.not(.contains("foo"))`
 
 #### Scenario: NOT does not extend past immediate primary
 - **GIVEN** the token list `[NOT, Phrase("a"), OR, Phrase("b"), Phrase("c")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `OrNode(NotNode(ContainsNode("a")), AndNode(ContainsNode("b"), ContainsNode("c")))`
+- **THEN** the result SHALL be `.or(.not(.contains("a")), .and(.contains("b"), .contains("c")))`
 
 #### Scenario: Two negated phrases with implicit AND
 - **GIVEN** the token list `[UnaryOperator.bang, Phrase("foo"), Phrase("bar")]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(NotNode(ContainsNode("foo")), ContainsNode("bar"))`
+- **THEN** the result SHALL be `.and(.not(.contains("foo")), .contains("bar"))`
 
 #### Scenario: 10,000 chained bangs parse without stack overflow
 - **WHEN** the parser receives 10,000 `UnaryOperator.bang` tokens followed by a single `Phrase`
@@ -164,7 +164,7 @@ When a unary operator precedes an opening parenthesis, the parser SHALL negate t
 #### Scenario: NOT before parenthesized OR
 - **GIVEN** the token list `[NOT, "(", Phrase("a"), OR, Phrase("b"), ")"]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `NotNode(OrNode(ContainsNode("a"), ContainsNode("b")))`
+- **THEN** the result SHALL be `.not(.or(.contains("a"), .contains("b")))`
 
 ### Requirement: Trailing Unary Operator Becomes Literal Text
 
@@ -173,26 +173,26 @@ When a unary operator token appears at the end of the token list with no followi
 #### Scenario: Trailing bang
 - **GIVEN** the token list `[Phrase("foo"), UnaryOperator.bang]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("foo"), ContainsNode("!"))`
+- **THEN** the result SHALL be `.and(.contains("foo"), .contains("!"))`
 
 #### Scenario: Trailing NOT
 - **GIVEN** the token list `[Phrase("foo"), UnaryOperator.not]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("foo"), ContainsNode("NOT"))`
+- **THEN** the result SHALL be `.and(.contains("foo"), .contains("NOT"))`
 
 ### Requirement: Lone Unary Operator Becomes Literal Text
 
-When a unary operator token is the only token, the parser SHALL produce a `ContainsNode` with the operator's text.
+When a unary operator token is the only token, the parser SHALL produce `.contains(text)` with the operator's text.
 
 #### Scenario: Lone bang
 - **GIVEN** the token list `[UnaryOperator.bang]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `ContainsNode("!")`
+- **THEN** the result SHALL be `.contains("!")`
 
 #### Scenario: Lone NOT
 - **GIVEN** the token list `[UnaryOperator.not]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `ContainsNode("NOT")`
+- **THEN** the result SHALL be `.contains("NOT")`
 
 ### Requirement: Parenthesized Grouping
 
@@ -201,16 +201,16 @@ Opening and closing parenthesis tokens SHALL group sub-expressions. The parser p
 #### Scenario: Two parenthesized groups with implicit AND
 - **GIVEN** the token list `["(", Phrase("a"), OR, Phrase("b"), ")", "(", Phrase("c"), AND, Phrase("d"), ")"]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(OrNode(ContainsNode("a"), ContainsNode("b")), AndNode(ContainsNode("c"), ContainsNode("d")))`
+- **THEN** the result SHALL be `.and(.or(.contains("a"), .contains("b")), .and(.contains("c"), .contains("d")))`
 
 ### Requirement: Empty Parentheses Become Literal Text
 
-When a closing parenthesis immediately follows an opening parenthesis, the parser SHALL produce an `AndNode` of `ContainsNode("(")` and `ContainsNode(")")`.
+When a closing parenthesis immediately follows an opening parenthesis, the parser SHALL produce `.and(.contains("("), .contains(")"))`.
 
 #### Scenario: Empty parens
 - **GIVEN** the token list `["(", ")"]`
 - **WHEN** the parser produces an expression
-- **THEN** the result SHALL be `AndNode(ContainsNode("("), ContainsNode(")"))`
+- **THEN** the result SHALL be `.and(.contains("("), .contains(")"))`
 
 ### Requirement: Unbalanced Parentheses Are Converted to Words
 
