@@ -106,5 +106,5 @@ The system SHALL support nested balanced parentheses at arbitrary depth, using O
 - **THEN** all pairs are preserved without stack overflow
 
 ## Technical Notes
-- **Implementation**: `Sources/SearchExpressionParser/Parsing/Parser.swift` (functions `balanceParentheses(tokens:)` and private recursive helper with `Balance` enum)
+- **Implementation**: `Sources/SearchExpressionParser/Parsing/Parser.swift` (function `balanceParentheses(tokens:)`, which uses an explicit `[Int]` index stack (`openStack`) in a single forward pass to track unmatched openers, followed by a second pass that converts any remaining indices in `openStack` to `Word` tokens; no recursion, no `Balance` enum)
 - **Dependencies**: Tokenization domain (Token protocol, OpeningParens, ClosingParens, Phrase/Word types defined in `Sources/SearchExpressionParser/Tokenization/Tokens.swift`)
