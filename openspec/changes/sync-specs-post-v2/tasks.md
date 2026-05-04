@@ -1,16 +1,16 @@
 ## 1. Sanity-check the deltas before archive
 
-- [ ] 1.1 Run `openspec validate sync-specs-post-v2 --strict`; resolve any reported issues
-- [ ] 1.2 Diff each MODIFIED requirement block against the current `openspec/specs/<capability>/spec.md` to confirm the modification copies the *full* original block (no silent dropping of scenarios or sub-bullets); see `phrase-extractor`, `parsing-grammar`, `negation-normal-form`, `operator-recognition`
-- [ ] 1.3 Cross-check each REMOVED requirement's **Migration** pointer: open the cited destination spec and confirm the contract is actually present there (not just claimed to be)
+- [x] 1.1 Run `openspec validate sync-specs-post-v2 --strict`; resolve any reported issues
+- [x] 1.2 Diff each MODIFIED requirement block against the current `openspec/specs/<capability>/spec.md` to confirm the modification copies the *full* original block (no silent dropping of scenarios or sub-bullets); see `phrase-extractor`, `parsing-grammar`, `negation-normal-form`, `operator-recognition`
+- [x] 1.3 Cross-check each REMOVED requirement's **Migration** pointer: open the cited destination spec and confirm the contract is actually present there (not just claimed to be)
 
 ## 2. Direct-edit cleanup of preamble drift not covered by deltas
 
 OpenSpec deltas only operate on Requirements; Purpose / Source files / Technical Notes preamble must be patched separately. These edits land alongside the OpenSpec change as `docs(specs):` direct-edit commits.
 
-- [ ] 2.1 `parentheses-balancing/spec.md` Technical Notes line 109: replace "private recursive helper with `Balance` enum" with the actual iterative-stack description (Parser.swift:146-167 uses an explicit `[Int]` index stack)
-- [ ] 2.2 `negation-normal-form/spec.md` Purpose line 9: confirm wording is consistent with the MODIFIED requirements landed by this change ("iterative processing with no recursion limit" is fine; verify nothing else contradicts it)
-- [ ] 2.3 Do a final `rg` pass across `openspec/specs/` for any remaining `ContainsNode|AndNode|OrNode|NotNode|AnythingNode|isSatisfied|StringExpressionSatisfiable|CStringExpressionSatisfiable|PhraseCollectionConvertible|ContainmentEvaluator|pushNegation|normalizedEvaluable` references; fix any survivors via direct edit (these should be empty after archive completes the REMOVED capabilities and applies the MODIFIED deltas, but a sweep catches anything missed)
+- [x] 2.1 `parentheses-balancing/spec.md` Technical Notes line 109: replace "private recursive helper with `Balance` enum" with the actual iterative-stack description (Parser.swift:146-167 uses an explicit `[Int]` index stack)
+- [x] 2.2 `negation-normal-form/spec.md` Purpose line 9: confirm wording is consistent with the MODIFIED requirements landed by this change ("iterative processing with no recursion limit" is fine; verify nothing else contradicts it)
+- [x] 2.3 Do a final `rg` pass across `openspec/specs/` for any remaining `ContainsNode|AndNode|OrNode|NotNode|AnythingNode|isSatisfied|StringExpressionSatisfiable|CStringExpressionSatisfiable|PhraseCollectionConvertible|ContainmentEvaluator|pushNegation|normalizedEvaluable` references; fix any survivors via direct edit (these should be empty after archive completes the REMOVED capabilities and applies the MODIFIED deltas, but a sweep catches anything missed)
 
 ## 3. Archive
 
