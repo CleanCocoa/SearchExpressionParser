@@ -14,12 +14,12 @@ OpenSpec deltas only operate on Requirements; Purpose / Source files / Technical
 
 ## 3. Archive
 
-- [ ] 3.1 Confirm all delta files are present: `openspec/changes/sync-specs-post-v2/specs/{phrase-extraction,iterative-parsing,iterative-evaluation,iterative-phrases,iterative-push-negation,expression-evaluation,architecture,overview,phrase-extractor,parsing-grammar,negation-normal-form,operator-recognition}/spec.md`
-- [ ] 3.2 Run `openspec validate sync-specs-post-v2 --strict` one more time
-- [ ] 3.3 Run the test suite (`swift test`) — should be unchanged (no code touched), but a green run rules out any incidental regression in the working tree
-- [ ] 3.4 Invoke `/opsx:archive` (or `openspec-archive-change` skill) for `sync-specs-post-v2`. Expected effect: the 8 retired capability directories are removed from `openspec/specs/`; the 4 modified capabilities have their requirement blocks rewritten per the deltas
-- [ ] 3.5 After archive, verify `openspec/specs/` no longer contains `phrase-extraction/`, `iterative-parsing/`, `iterative-evaluation/`, `iterative-phrases/`, `iterative-push-negation/`, `expression-evaluation/`, `architecture/`, `overview/`
-- [ ] 3.6 After archive, verify the 4 modified capability specs reflect the delta content
+- [x] 3.1 Confirm all delta files are present: `openspec/changes/sync-specs-post-v2/specs/{phrase-extraction,iterative-parsing,iterative-evaluation,iterative-phrases,iterative-push-negation,expression-evaluation,architecture,overview,phrase-extractor,parsing-grammar,negation-normal-form,operator-recognition}/spec.md`
+- [x] 3.2 Run `openspec validate sync-specs-post-v2 --strict` one more time
+- [x] 3.3 Run the test suite (`swift test`) — should be unchanged (no code touched), but a green run rules out any incidental regression in the working tree
+- [x] 3.4 Invoke `/opsx:archive` (or `openspec-archive-change` skill) for `sync-specs-post-v2`. Expected effect: the 8 retired capability directories are removed from `openspec/specs/`; the 4 modified capabilities have their requirement blocks rewritten per the deltas
+- [x] 3.5 After archive, verify `openspec/specs/` no longer contains `phrase-extraction/`, `iterative-parsing/`, `iterative-evaluation/`, `iterative-phrases/`, `iterative-push-negation/`, `expression-evaluation/`, `architecture/`, `overview/`
+- [x] 3.6 After archive, verify the 4 modified capability specs reflect the delta content
 
 ## 4. Follow-up considerations
 
