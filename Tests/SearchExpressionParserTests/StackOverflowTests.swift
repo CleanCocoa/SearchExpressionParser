@@ -39,6 +39,17 @@ class StackOverflowTests: XCTestCase {
     func testChainedBangs_5000()  { tryParse(chainedBangs(count: 5000)) }
     func testChainedBangs_10000() { tryParse(chainedBangs(count: 10000)) }
 
+    /// @spec parsing-grammar/unary-not-bang-binds-to-immediately-following-primary/trailing-negations-at-scale
+    func testTrailingBangs_NoPrimary_10000() {
+        let input = String(repeating: "! ", count: 10000)
+        do {
+            let expression = try Parser.parse(searchString: input)
+            XCTAssertNotEqual(expression, .anything, "Trailing bangs should not collapse to .anything")
+        } catch {
+            XCTFail("Parse threw: \(error)")
+        }
+    }
+
     // MARK: - Vector 5: Combined nested parens + AND: "(a AND (b AND (c AND ...)))"
 
     func testNestedParensAND_100()   { tryParse(nestedParensAND(depth: 100)) }

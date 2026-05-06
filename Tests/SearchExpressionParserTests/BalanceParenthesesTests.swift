@@ -28,11 +28,12 @@ class BalanceParenthesesTests: XCTestCase {
             [Phrase("(")])
     }
 
-//    func testBalance_10OpeningParens() {
-//        XCTAssertEqual(
-//            balanceParentheses(tokens: [OpeningParens(), OpeningParens(), OpeningParens(), OpeningParens(), OpeningParens(), OpeningParens(), OpeningParens(), OpeningParens(), OpeningParens(), OpeningParens()]),
-//            [Phrase("((((((((((")])
-//    }
+    /// @spec parsing-grammar/unbalanced-parentheses-are-converted-to-words/10000-unmatched-opening-parens-balance-without-stack-overflow
+    func testBalance_10000UnmatchedOpens() {
+        let input = Array(repeating: OpeningParens() as Token, count: 10000)
+        let expected = Array(repeating: Phrase("(") as Token, count: 10000)
+        XCTAssertEqual(balanceParentheses(tokens: input), expected)
+    }
 
     /// @spec parentheses-balancing/unmatched-closing-parens-converted-to-phrase/single-unmatched-closing-paren
     /// @spec parsing-grammar/unbalanced-parentheses-are-converted-to-words/unmatched-closing-paren-at-root-level
@@ -42,11 +43,13 @@ class BalanceParenthesesTests: XCTestCase {
             [Phrase(")")])
     }
 
-//    func testBalance_10ClosingParens() {
-//        XCTAssertEqual(
-//            balanceParentheses(tokens: [ClosingParens(), ClosingParens(), ClosingParens(), ClosingParens(), ClosingParens(), ClosingParens(), ClosingParens(), ClosingParens(), ClosingParens(), ClosingParens()]),
-//            [Phrase("))))))))))")])
-//    }
+    /// @spec parsing-grammar/unbalanced-parentheses-are-converted-to-words/10000-balanced-nested-parens-balance-without-stack-overflow
+    func testBalance_10000BalancedNested() {
+        let opens = Array(repeating: OpeningParens() as Token, count: 10000)
+        let closes = Array(repeating: ClosingParens() as Token, count: 10000)
+        let input: [Token] = opens + [Word("x")] + closes
+        XCTAssertEqual(balanceParentheses(tokens: input), input)
+    }
 
     /// @spec parentheses-balancing/matched-pairs-preserved/empty-balanced-pair
     func testBalance_BalancedEmptyParens() {
