@@ -124,6 +124,30 @@ Cases:
 - `.and` / `.or` — boolean combinators.
 - `.keyValue` — opaque `key:value` pair for the consuming app to interpret.
 
+### Normalization
+
+`normalize(_:)` rewrites an expression into negation normal form by pushing `.not` nodes inward via De Morgan's laws until negations only wrap leaf nodes:
+
+```swift
+let expr = try Parser.parse(searchString: "NOT (foo AND bar)")
+let nnf = normalize(expr)
+// .or(.not(.contains("foo")), .not(.contains("bar")))
+```
+
+The implementation is iterative (explicit work stack), so arbitrarily deep trees normalize without stack overflow.
+
+### Phrase extraction
+
+`PhraseExtractor` is a built-in `ExpressionEvaluator` that folds an expression into the list of positive containment phrases — useful for highlighting matches:
+
+```swift
+let expr = try Parser.parse(searchString: "foo AND NOT bar")
+let phrases = evaluate(normalize(expr), with: PhraseExtractor())
+// ["foo"]
+```
+
+Negated and key-value subtrees contribute no phrases. Run `normalize` first so any negations are pushed to the leaves before extraction.
+
 ## Apps that use this
 
 - [The Archive](https://zettelkasten.de/the-archive/), a fast plain-text note-taking app for macOS.
